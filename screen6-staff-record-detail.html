@@ -110,7 +110,7 @@
             z-index: 50;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
-        .field-modified:hover .original-value-tooltip {
+        .field-modified:hover ~ .original-value-tooltip {
             display: block;
         }
     </style>
@@ -688,6 +688,51 @@
     <div id="toast-container" class="fixed bottom-8 right-8 z-[2000] flex flex-col gap-3 pointer-events-none"></div>
 
     <script>
+        // Simple Word Diff for Amendment Tooltips
+        function generateDiffHTML(oldStr, newStr) {
+            if (!oldStr) oldStr = '';
+            if (!newStr) newStr = '';
+            
+            const oldWords = oldStr.split(/(\s+)/);
+            const newWords = newStr.split(/(\s+)/);
+            
+            const matrix = Array(oldWords.length + 1).fill(null).map(() => Array(newWords.length + 1).fill(0));
+            
+            for (let i = 1; i <= oldWords.length; i++) {
+                for (let j = 1; j <= newWords.length; j++) {
+                    if (oldWords[i-1] === newWords[j-1]) {
+                        matrix[i][j] = matrix[i-1][j-1] + 1;
+                    } else {
+                        matrix[i][j] = Math.max(matrix[i-1][j], matrix[i][j-1]);
+                    }
+                }
+            }
+            
+            let i = oldWords.length;
+            let j = newWords.length;
+            const diff = [];
+            
+            while (i > 0 || j > 0) {
+                if (i > 0 && j > 0 && oldWords[i-1] === newWords[j-1]) {
+                    diff.unshift({ text: oldWords[i-1], type: 'equal' });
+                    i--; j--;
+                } else if (j > 0 && (i === 0 || matrix[i][j-1] >= matrix[i-1][j])) {
+                    diff.unshift({ text: newWords[j-1], type: 'added' });
+                    j--;
+                } else if (i > 0 && (j === 0 || matrix[i][j-1] < matrix[i-1][j])) {
+                    diff.unshift({ text: oldWords[i-1], type: 'removed' });
+                    i--;
+                }
+            }
+            
+            return diff.map(part => {
+                if (!part.text.trim() && part.type !== 'equal') return part.text; // don't highlight pure whitespace changes heavily
+                if (part.type === 'added') return `<span class="bg-emerald-500/30 text-emerald-200 rounded px-0.5">${part.text}</span>`;
+                if (part.type === 'removed') return `<span class="bg-red-500/30 text-red-300 line-through rounded px-0.5">${part.text}</span>`;
+                return part.text;
+            }).join('');
+        }
+
         // Amendment Logic
         function enableAmendmentMode() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -754,7 +799,7 @@
 
                 const checkChange = function() {
                     let currentVal = field.type === 'div' ? el.innerText.trim() : el.value.trim();
-                    const originalVal = el.getAttribute('data-original').trim();
+                    const originalVal = el.hasAttribute('data-original') ? el.getAttribute('data-original').trim() : '';
                     
                     if (currentVal !== originalVal) {
                         if (!el.parentElement.querySelector('.modified-indicator')) {
@@ -764,10 +809,18 @@
                             indicator.innerText = 'Modified';
                             el.parentElement.appendChild(indicator);
                         }
+                        const tooltip = el.parentElement.querySelector('.original-value-tooltip');
+                        if (tooltip) {
+                            tooltip.innerHTML = '<div class="mb-1 font-bold text-slate-300 uppercase tracking-widest text-[8px]">Changes made:</div>' + generateDiffHTML(originalVal, currentVal);
+                        }
                     } else {
                         el.classList.remove('field-modified');
                         const ind = el.parentElement.querySelector('.modified-indicator');
                         if (ind) ind.remove();
+                        const tooltip = el.parentElement.querySelector('.original-value-tooltip');
+                        if (tooltip) {
+                            tooltip.innerHTML = 'Original: ' + originalVal;
+                        }
                     }
                 };
 

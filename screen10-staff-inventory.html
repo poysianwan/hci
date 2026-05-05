@@ -587,7 +587,7 @@
                                 <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-outline-variant/10">
+                        <tbody id="archived-tbody" class="divide-y divide-outline-variant/10">
                             <tr>
                                 <td class="px-8 py-5">
                                     <p class="font-bold text-slate-800">Ascorbic Acid (Old Batch)</p>
@@ -766,6 +766,12 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Archived Pagination -->
+                <div class="flex items-center justify-between px-2 mt-4">
+                    <p id="archive-page-info" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"></p>
+                    <div id="archive-pagination" class="flex items-center gap-1.5"></div>
                 </div>
             </div>
         </div>
@@ -1129,7 +1135,71 @@
             if (validTabs.includes(tab)) {
                 switchTab(tab);
             }
+            initArchivedPagination();
         });
+
+        // ── Archived Records Pagination ──────────────────────────────
+        const ARCHIVED_PER_PAGE = 5;
+        let archivedCurrentPage = 1;
+
+        function initArchivedPagination() {
+            renderArchivedPage(1);
+        }
+
+        function renderArchivedPage(page) {
+            const tbody = document.getElementById('archived-tbody');
+            if (!tbody) return;
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const totalRows = rows.length;
+            const totalPages = Math.ceil(totalRows / ARCHIVED_PER_PAGE);
+            archivedCurrentPage = Math.max(1, Math.min(page, totalPages));
+
+            const start = (archivedCurrentPage - 1) * ARCHIVED_PER_PAGE;
+            const end   = start + ARCHIVED_PER_PAGE;
+
+            rows.forEach((row, i) => {
+                row.style.display = (i >= start && i < end) ? '' : 'none';
+            });
+
+            // Page info
+            document.getElementById('archive-page-info').textContent =
+                `Showing ${Math.min(start + 1, totalRows)}–${Math.min(end, totalRows)} of ${totalRows} records`;
+
+            // Pagination buttons
+            const paginationEl = document.getElementById('archive-pagination');
+            paginationEl.innerHTML = '';
+
+            // Prev button
+            const prevBtn = document.createElement('button');
+            prevBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">chevron_left</span>';
+            prevBtn.disabled = archivedCurrentPage === 1;
+            prevBtn.className = `w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold transition-all border
+                ${archivedCurrentPage === 1 ? 'text-slate-300 border-slate-100 cursor-not-allowed' : 'text-slate-500 border-slate-200 hover:bg-slate-100'}`;
+            prevBtn.onclick = () => renderArchivedPage(archivedCurrentPage - 1);
+            paginationEl.appendChild(prevBtn);
+
+            // Page number buttons
+            for (let p = 1; p <= totalPages; p++) {
+                const btn = document.createElement('button');
+                btn.textContent = p;
+                const isActive = p === archivedCurrentPage;
+                btn.className = `w-8 h-8 rounded-xl text-xs font-black transition-all border
+                    ${isActive
+                        ? 'bg-primary text-white border-primary shadow-md shadow-primary/20'
+                        : 'text-slate-500 border-slate-200 hover:bg-slate-100'}`;
+                btn.onclick = () => renderArchivedPage(p);
+                paginationEl.appendChild(btn);
+            }
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">chevron_right</span>';
+            nextBtn.disabled = archivedCurrentPage === totalPages;
+            nextBtn.className = `w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold transition-all border
+                ${archivedCurrentPage === totalPages ? 'text-slate-300 border-slate-100 cursor-not-allowed' : 'text-slate-500 border-slate-200 hover:bg-slate-100'}`;
+            nextBtn.onclick = () => renderArchivedPage(archivedCurrentPage + 1);
+            paginationEl.appendChild(nextBtn);
+        }
     </script>
 </body>
 </html>

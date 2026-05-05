@@ -248,29 +248,29 @@
                     <div id="quickFilters" class="flex items-center gap-2 border-b border-outline-variant/20 overflow-x-auto pb-px scrollbar-hide"
                         style="-ms-overflow-style: none; scrollbar-width: none;">
                         <button onclick="setStatusFilter('all')" data-filter="all"
-                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap transition-colors">
-                            All Records <span id="count-all"
-                                class="ml-1.5 px-2 py-0.5 rounded-full bg-blue-100 text-[10px] text-primary">24</span>
+                            class="status-tab flex items-center gap-1.5 px-5 py-2.5 text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap transition-colors">
+                            <span id="count-all"
+                                class="px-2 py-0.5 rounded-full bg-blue-100 text-[10px] text-primary">24</span> All Records
                         </button>
                         <button onclick="setStatusFilter('unaddressed')" data-filter="unaddressed"
-                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
-                            Unaddressed <span id="count-unaddressed"
-                                class="ml-1.5 px-2 py-0.5 rounded-full bg-amber-50 text-[10px] text-amber-600 group-hover:bg-amber-100 transition-colors">1</span>
+                            class="status-tab flex items-center gap-1.5 px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
+                            <span id="count-unaddressed"
+                                class="px-2 py-0.5 rounded-full bg-amber-50 text-[10px] text-amber-600 group-hover:bg-amber-100 transition-colors">1</span> Unaddressed
                         </button>
                         <button onclick="setStatusFilter('active')" data-filter="active"
-                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
-                            Active <span id="count-active"
-                                class="ml-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-hover:bg-slate-200 transition-colors">3</span>
+                            class="status-tab flex items-center gap-1.5 px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
+                            <span id="count-active"
+                                class="px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-hover:bg-slate-200 transition-colors">3</span> Active
                         </button>
                         <button onclick="setStatusFilter('completed')" data-filter="completed"
-                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
-                            Completed <span id="count-completed"
-                                class="ml-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-hover:bg-slate-200 transition-colors">19</span>
+                            class="status-tab flex items-center gap-1.5 px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
+                            <span id="count-completed"
+                                class="px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-hover:bg-slate-200 transition-colors">19</span> Completed
                         </button>
                         <button onclick="setStatusFilter('cancelled')" data-filter="cancelled"
-                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
-                            Cancelled <span id="count-cancelled"
-                                class="ml-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-hover:bg-slate-200 transition-colors">1</span>
+                            class="status-tab flex items-center gap-1.5 px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
+                            <span id="count-cancelled"
+                                class="px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-hover:bg-slate-200 transition-colors">1</span> Cancelled
                         </button>
                     </div>
                 </div>
@@ -832,16 +832,19 @@
             container.innerHTML = '';
 
             let hasFilters = false;
+            const rows = Array.from(document.querySelectorAll('.patient-row'));
 
             // Status Chip
             if (currentStatusFilter !== 'all') {
-                addChip('Status: ' + currentStatusFilter.charAt(0).toUpperCase() + currentStatusFilter.slice(1), () => setStatusFilter('all'));
+                const count = rows.filter(r => r.dataset.status === currentStatusFilter).length;
+                addChip(count, 'Status: ' + currentStatusFilter.charAt(0).toUpperCase() + currentStatusFilter.slice(1), () => setStatusFilter('all'));
                 hasFilters = true;
             }
 
             // Search Chip
             if (search) {
-                addChip('Search: "' + search + '"', () => {
+                const count = rows.filter(r => r.dataset.search.toLowerCase().includes(search)).length;
+                addChip(count, 'Search: "' + search + '"', () => {
                     document.getElementById('patientSearch').value = '';
                     updateFilters();
                 });
@@ -850,8 +853,9 @@
 
             // Staff Chip
             if (staff !== 'all') {
+                const count = rows.filter(r => r.dataset.staff === staff).length;
                 const staffName = document.querySelector(`#staffFilter option[value="${staff}"]`).text;
-                addChip('Staff: ' + staffName, () => {
+                addChip(count, 'Staff: ' + staffName, () => {
                     document.getElementById('staffFilter').value = 'all';
                     updateFilters();
                 });
@@ -860,8 +864,9 @@
 
             // Purpose Chips
             purposes.forEach(p => {
+                const count = rows.filter(r => r.dataset.purpose === p).length;
                 const label = getPurposeLabel(p);
-                addChip('Purpose: ' + label, () => {
+                addChip(count, 'Purpose: ' + label, () => {
                     document.querySelector(`input[name="purpose"][value="${p}"]`).checked = false;
                     updateFilters();
                 });
@@ -877,12 +882,13 @@
             }
         }
 
-        function addChip(text, onRemove) {
+        function addChip(count, text, onRemove) {
             const chip = document.createElement('div');
             chip.className = 'flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] font-bold border border-slate-200';
             chip.innerHTML = `
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-200/70 text-[9px] text-slate-600 font-black">${count}</span>
                 <span>${text}</span>
-                <button class="hover:text-red-500 transition-colors flex items-center">
+                <button class="hover:text-red-500 transition-colors flex items-center ml-0.5">
                     <span class="material-symbols-outlined text-[14px]">close</span>
                 </button>
             `;
