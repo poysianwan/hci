@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PLP ClinicConnect - Dashboard</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00478d",
+                        "primary-fixed": "#d6e3ff",
+                        "primary-container": "#005eb8",
+                        "on-primary": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c2c6d4"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-backdrop.show .modal-content {
+            transform: scale(1);
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface h-screen flex flex-col overflow-hidden relative">
+    <!-- Top Header -->
+    <header
+        class="w-full px-8 py-4 shrink-0 flex justify-between items-center bg-white border-b border-outline-variant/20 shadow-sm relative z-20">
+        <div class="flex items-center gap-2.5">
+            <div
+                class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-[18px] font-bold"
+                    data-icon="clinical_notes">clinical_notes</span>
+            </div>
+            <span class="font-headline font-extrabold text-base tracking-tight text-[#1c2a59]">PLP Clinic<span
+                    class="text-[#004d9c]">Connect</span></span>
+        </div>
+        <nav class="hidden md:flex items-center gap-6 lg:gap-8">
+            <a href="screen5-staff-dashboard.html"
+                class="text-xs font-bold text-primary border-b-2 border-primary py-1 tracking-wide">Dashboard</a>
+            <a href="screen6-staff-record-detail.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Patient
+                Records</a>
+            <a href="screen10-staff-inventory.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Inventory</a>
+            <a href="screen11-staff-reports.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Reports</a>
+            <a href="screen9-staff-settings.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Settings</a>
+            <div class="w-px h-4 bg-slate-200 mx-1"></div>
+            <a href="javascript:void(0)" onclick="showLogoutModal()"
+                class="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-red-600 transition-colors py-1 tracking-wide">
+                Logout
+                <span class="material-symbols-outlined text-[16px]" data-icon="logout">logout</span>
+            </a>
+        </nav>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center bg-surface w-full p-6 lg:p-10 overflow-y-auto">
+        <div class="max-w-7xl w-full space-y-10 pb-20">
+            <!-- Title & Status -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                <div>
+                    <h1 class="font-headline text-3xl md:text-4xl font-extrabold text-[#1c2a59] tracking-tight">
+                        Good day, Doctor!</h1>
+                    <p class="text-sm font-bold text-slate-500 mt-1 text-emerald-600 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                        Everything looks good for today.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-end gap-3">
+                    <div class="bg-amber-50 border border-amber-200 px-4 py-2 rounded-2xl flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-amber-800 uppercase tracking-widest">Stock Alert</p>
+                            <p class="text-[11px] font-bold text-amber-900">Low: Ibuprofen, Heating Pad, Nebulizers</p>
+                        </div>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 text-xs font-semibold text-slate-400 bg-slate-100/50 px-3 py-1.5 rounded-full border border-slate-200/50">
+                        <span class="material-symbols-outlined text-[14px]">sync</span>
+                        Last updated: Just now
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div
+                    class="bg-white rounded-[2rem] p-8 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-shadow hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden flex flex-col justify-between">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Total
+                                Visits Today</p>
+                            <p class="font-headline text-4xl text-slate-800 font-extrabold leading-none">24</p>
+                        </div>
+                        <div
+                            class="w-14 h-14 rounded-[1rem] bg-indigo-50/80 text-indigo-600 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-3xl" data-icon="today">today</span>
+                        </div>
+                    </div>
+                    <div class="mt-5 flex items-center gap-2 text-xs font-bold text-slate-400">
+                        <span
+                            class="text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px]">arrow_upward</span> 12%
+                        </span>
+                        vs yesterday
+                    </div>
+                </div>
+
+                <!-- Card 2: Clickable Borrowed Items -->
+                <a href="screen10-staff-inventory.html?tab=equipment"
+                    class="bg-white rounded-[2rem] p-8 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all hover:shadow-[0_20px_40px_rgb(0,71,141,0.08)] hover:-translate-y-1 group relative overflow-hidden flex flex-col justify-between cursor-pointer">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 group-hover:text-primary transition-colors">
+                                Borrowed Items</p>
+                            <p class="font-headline text-4xl text-slate-800 font-extrabold leading-none">5</p>
+                        </div>
+                        <div
+                            class="w-14 h-14 rounded-[1rem] bg-blue-50/80 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all">
+                            <span class="material-symbols-outlined text-3xl">home_repair_service</span>
+                        </div>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                            <span
+                                class="text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">outbound</span> 2
+                            </span>
+                            issued today
+                        </div>
+                        <div
+                            class="flex items-center gap-1 text-[10px] font-black text-primary uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                            Track <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 3 -->
+                <div
+                    class="bg-white rounded-[2rem] p-8 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-shadow hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden flex flex-col justify-between">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Active
+                                Visits</p>
+                            <p class="font-headline text-4xl text-slate-800 font-extrabold leading-none">3</p>
+                        </div>
+                        <div
+                            class="w-14 h-14 rounded-[1rem] bg-amber-50/80 text-amber-600 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-3xl animate-pulse"
+                                data-icon="medical_information">medical_information</span>
+                        </div>
+                    </div>
+                    <div class="mt-5 flex items-center gap-2 text-xs font-bold text-slate-400">
+                        <span
+                            class="text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px]">schedule</span> 1 waiting
+                        </span>
+                        in queue
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Section -->
+            <div class="space-y-6 pt-4">
+
+                <!-- Toolbar and Tabs Container -->
+                <div class="flex flex-col gap-6">
+                    <!-- Toolbar -->
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 w-full">
+                        <h2 class="font-headline text-2xl md:text-3xl font-extrabold text-[#1c2a59] tracking-tight">
+                            Recent Activity</h2>
+
+                        <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                            <div class="relative w-full sm:w-64 lg:w-80">
+                                <span
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400">search</span>
+                                <input type="text" id="patientSearch" placeholder="Search name or ID..." oninput="updateFilters()"
+                                    class="w-full pl-11 pr-4 py-3 bg-white border border-outline-variant/20 rounded-2xl focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-[13px] font-semibold text-slate-700 placeholder:text-slate-400 shadow-sm">
+                            </div>
+                            <div class="flex gap-2 w-full sm:w-auto">
+                                <button onclick="showModal('advancedFilterModal')"
+                                    class="flex-1 sm:flex-none px-4 py-3 bg-white border border-outline-variant/20 rounded-2xl flex items-center justify-center gap-2 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors active:scale-95 shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                                    <span class="hidden lg:inline">Filters</span>
+                                </button>
+                                <button
+                                    class="flex-1 sm:flex-none px-4 py-3 bg-white border border-outline-variant/20 rounded-2xl flex items-center justify-center gap-2 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors active:scale-95 shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                                    Today
+                                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Tabs -->
+                    <div id="quickFilters" class="flex items-center gap-2 border-b border-outline-variant/20 overflow-x-auto pb-px scrollbar-hide"
+                        style="-ms-overflow-style: none; scrollbar-width: none;">
+                        <button onclick="setStatusFilter('all')" data-filter="all"
+                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap transition-colors">
+                            All Records <span id="count-all"
+                                class="ml-1.5 px-2 py-0.5 rounded-full bg-blue-100 text-[10px] text-primary">24</span>
+                        </button>
+                        <button onclick="setStatusFilter('unaddressed')" data-filter="unaddressed"
+                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
+                            Unaddressed <span id="count-unaddressed"
+                                class="ml-1.5 px-2 py-0.5 rounded-full bg-amber-50 text-[10px] text-amber-600 group-hover:bg-amber-100 transition-colors">1</span>
+                        </button>
+                        <button onclick="setStatusFilter('active')" data-filter="active"
+                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
+                            Active <span id="count-active"
+                                class="ml-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-hover:bg-slate-200 transition-colors">3</span>
+                        </button>
+                        <button onclick="setStatusFilter('completed')" data-filter="completed"
+                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
+                            Completed <span id="count-completed"
+                                class="ml-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-hover:bg-slate-200 transition-colors">19</span>
+                        </button>
+                        <button onclick="setStatusFilter('cancelled')" data-filter="cancelled"
+                            class="status-tab px-5 py-2.5 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors group">
+                            Cancelled <span id="count-cancelled"
+                                class="ml-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-hover:bg-slate-200 transition-colors">1</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Filter Chips -->
+                <div id="activeFilterChips" class="hidden flex-wrap items-center gap-2 px-8 py-4 bg-white border-b border-outline-variant/10">
+                    <div class="flex items-center gap-2 mr-2">
+                        <span class="material-symbols-outlined text-slate-400 text-sm">filter_alt</span>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Filters</span>
+                    </div>
+                    <div id="chipsContainer" class="flex flex-wrap gap-2"></div>
+                    <button onclick="resetFilters()" class="ml-auto text-[10px] font-black text-primary uppercase tracking-widest hover:underline">Clear All</button>
+                </div>
+
+                <!-- Table -->
+                <div
+                    class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] overflow-hidden">
+                    <div
+                        class="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/50 border-b border-outline-variant/10">
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] w-1/4 cursor-pointer hover:bg-slate-100 transition-colors group">
+                                        <div class="flex items-center gap-1.5">Name <span
+                                                class="material-symbols-outlined text-[14px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_downward</span>
+                                        </div>
+                                    </th>
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] cursor-pointer hover:bg-slate-100 transition-colors">
+                                        Student/Staff ID
+                                    </th>
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] cursor-pointer hover:bg-slate-100 transition-colors group">
+                                        <div class="flex items-center gap-1.5">Time-in <span
+                                                class="material-symbols-outlined text-[14px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_downward</span>
+                                        </div>
+                                    </th>
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                                        Purpose</th>
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] cursor-pointer hover:bg-slate-100 transition-colors group">
+                                        <div class="flex items-center gap-1.5">Staff <span
+                                                class="material-symbols-outlined text-[14px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_downward</span>
+                                        </div>
+                                    </th>
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] text-center cursor-pointer hover:bg-slate-100 transition-colors group">
+                                        <div class="flex items-center justify-center gap-1.5">Status <span
+                                                class="material-symbols-outlined text-[14px] opacity-0 group-hover:opacity-100 transition-opacity">filter_alt</span>
+                                        </div>
+                                    </th>
+                                    <th class="px-6 py-5 w-24"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant/10">
+                                <!-- Row 1 -->
+                                <tr class="patient-row hover:bg-slate-50 transition-colors group cursor-pointer" data-status="active" data-purpose="monitoring" data-staff="dizon" data-search="Maria Santos 2021-8831 Health Monitoring"
+                                    onclick="window.location.href='screen6-staff-record-detail.html'">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-sm font-extrabold text-primary shrink-0">
+                                                MS</div>
+                                            <span class="font-extrabold text-[15px] sm:text-base text-slate-800">Maria
+                                                Santos</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-[13px] font-medium text-slate-400">2021-8831</td>
+                                    <td class="px-8 py-5 text-[14px] font-bold text-slate-600">10:45 AM</td>
+                                    <td class="px-8 py-5 text-[14px] font-semibold text-slate-600">Health Monitoring</td>
+                                    <td class="px-8 py-5 text-[13px] font-bold text-slate-500 italic">Dr. Dizon</td>
+                                    <td class="px-8 py-5 text-center">
+                                        <div class="flex justify-center">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-blue-50 text-blue-700 border border-blue-200">
+                                                <span class="material-symbols-outlined text-[14px]">schedule</span>
+                                                Active
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-5 text-right" onclick="event.stopPropagation()">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <button onclick="window.location.href='screen6-staff-record-detail.html'"
+                                                class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-primary rounded-lg text-xs font-bold transition-colors active:scale-95"
+                                                title="View Details">View</button>
+                                            <button
+                                                class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors active:scale-95"
+                                                title="End Visit"><span
+                                                    class="material-symbols-outlined text-[16px]">close</span></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 2 -->
+                                <tr class="patient-row hover:bg-slate-50 transition-colors group cursor-pointer" data-status="completed" data-purpose="ape" data-staff="sarapuddin" data-search="John Doe 2023-0142 APE"
+                                    onclick="window.location.href='screen6-staff-record-detail.html'">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-extrabold text-slate-500 shrink-0">
+                                                JD</div>
+                                            <span class="font-extrabold text-[15px] sm:text-base text-slate-800">John
+                                                Doe</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-[13px] font-medium text-slate-400">2023-0142</td>
+                                    <td class="px-8 py-5 text-[14px] font-bold text-slate-600">09:14 AM</td>
+                                    <td class="px-8 py-5 text-[14px] font-semibold text-slate-600">APE</td>
+                                    <td class="px-8 py-5 text-[13px] font-bold text-slate-500 italic">Dr. Sarapuddin
+                                    </td>
+                                    <td class="px-8 py-5 text-center">
+                                        <div class="flex justify-center">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                                Completed
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-5 text-right" onclick="event.stopPropagation()">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <button onclick="window.location.href='screen6-staff-record-detail.html'"
+                                                class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-colors active:scale-95"
+                                                title="View Details">View</button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 3 -->
+                                <tr class="patient-row hover:bg-slate-50 transition-colors group cursor-pointer" data-status="active" data-purpose="monitoring" data-staff="mortil" data-search="Alice Reyes STAFF-102 Health Monitoring"
+                                    onclick="window.location.href='screen6-staff-record-detail.html'">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-extrabold text-slate-500 shrink-0">
+                                                AR</div>
+                                            <span class="font-extrabold text-[15px] sm:text-base text-slate-800">Alice
+                                                Reyes</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-[13px] font-medium text-slate-400">STAFF-102</td>
+                                    <td class="px-8 py-5 text-[14px] font-bold text-slate-600">11:00 AM</td>
+                                    <td class="px-8 py-5 text-[14px] font-semibold text-slate-600">Health Monitoring</td>
+                                    <td class="px-8 py-5 text-[13px] font-bold text-slate-500 italic">N. Mortil</td>
+                                    <td class="px-8 py-5 text-center">
+                                        <div class="flex justify-center">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-blue-50 text-blue-700 border border-blue-200">
+                                                <span class="material-symbols-outlined text-[14px]">schedule</span>
+                                                Active
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-5 text-right" onclick="event.stopPropagation()">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <button onclick="window.location.href='screen6-staff-record-detail.html'"
+                                                class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-primary rounded-lg text-xs font-bold transition-colors active:scale-95"
+                                                title="View Details">View</button>
+                                            <button onclick="showModal('confirmEndModal')"
+                                                class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors active:scale-95"
+                                                title="End Visit"><span
+                                                    class="material-symbols-outlined text-[16px]">close</span></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 4 -->
+                                <tr class="patient-row hover:bg-slate-50 transition-colors group cursor-pointer" data-status="cancelled" data-purpose="pain" data-staff="pena" data-search="Carl Dizon 2022-3124 Pain Management"
+                                    onclick="window.location.href='screen6-staff-record-detail.html'">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-extrabold text-slate-500 shrink-0">
+                                                CD</div>
+                                            <span class="font-extrabold text-[15px] sm:text-base text-slate-800">Carl
+                                                Dizon</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-[13px] font-medium text-slate-400">2022-3124</td>
+                                    <td class="px-8 py-5 text-[14px] font-bold text-slate-600">11:15 AM</td>
+                                    <td class="px-8 py-5 text-[14px] font-semibold text-slate-600">Pain Management</td>
+                                    <td class="px-8 py-5 text-[13px] font-bold text-slate-500 italic">N. Peña</td>
+                                    <td class="px-8 py-5 text-center">
+                                        <div class="flex justify-center">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-500 border border-slate-200">
+                                                <span class="material-symbols-outlined text-[14px]">person_off</span>
+                                                Cancelled
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-5 text-right" onclick="event.stopPropagation()">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <button onclick="window.location.href='screen6-staff-record-detail.html'"
+                                                class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-colors active:scale-95"
+                                                title="View Details">View</button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 5 (Unaddressed/Pending) -->
+                                <tr class="patient-row hover:bg-slate-50 transition-colors group cursor-pointer" data-status="unaddressed" data-purpose="dental" data-staff="all" data-search="Liza Macapagal 2024-0010 Dental Consult"
+                                    onclick="window.location.href='screen6-staff-record-detail.html'">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-sm font-extrabold text-amber-700 shrink-0">
+                                                LM</div>
+                                            <span class="font-extrabold text-[15px] sm:text-base text-slate-800">Liza
+                                                Macapagal</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-[13px] font-medium text-slate-400">2024-0010</td>
+                                    <td class="px-8 py-5 text-[14px] font-bold text-slate-600">01:30 PM</td>
+                                    <td class="px-8 py-5 text-[14px] font-semibold text-slate-600">Dental Consult</td>
+                                    <td class="px-8 py-5 text-[13px] font-bold text-slate-500 italic">—</td>
+                                    <td class="px-8 py-5 text-center">
+                                        <div class="flex justify-center">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-50 text-amber-700 border border-amber-200">
+                                                <span class="material-symbols-outlined text-[14px]">hourglass_top</span>
+                                                Unaddressed
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-5 text-right" onclick="event.stopPropagation()">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <button onclick="showModal('confirmAssessModal')"
+                                                class="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-lg text-xs font-bold transition-colors active:scale-95"
+                                                title="View Details">Assess Patient</button>
+                                            <button onclick="showModal('confirmWaitModal')"
+                                                class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors active:scale-95 border border-slate-200"
+                                                title="Mark as Did Not Wait / Cancel">
+                                                <span class="material-symbols-outlined text-[16px]">person_off</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Footer -->
+                    <div
+                        class="px-8 py-5 border-t border-outline-variant/10 bg-slate-50/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <span class="text-[13px] font-semibold text-slate-500">Showing 1 to 5 of 24 records</span>
+                        <div class="flex items-center gap-2">
+                            <button
+                                class="w-9 h-9 flex items-center justify-center bg-white border border-outline-variant/30 rounded-xl hover:bg-slate-50 disabled:opacity-50 text-slate-500 transition-colors"
+                                disabled>
+                                <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                            </button>
+                            <button
+                                class="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-xl font-bold text-sm shadow-md shadow-primary/20">1</button>
+                            <button
+                                class="w-9 h-9 flex items-center justify-center bg-white border border-outline-variant/30 text-slate-600 hover:bg-slate-50 rounded-xl font-bold text-sm transition-colors">2</button>
+                            <button
+                                class="w-9 h-9 flex items-center justify-center bg-white border border-outline-variant/30 text-slate-600 hover:bg-slate-50 rounded-xl font-bold text-sm transition-colors">3</button>
+                            <span class="px-1 text-slate-400">...</span>
+                            <button
+                                class="w-9 h-9 flex items-center justify-center bg-white border border-outline-variant/30 text-slate-600 hover:bg-slate-50 rounded-xl font-bold text-sm transition-colors">5</button>
+                            <button
+                                class="w-9 h-9 flex items-center justify-center bg-white border border-outline-variant/30 rounded-xl hover:bg-slate-50 text-slate-500 transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <button onclick="window.location.href='screen7-staff-add-record.html'"
+        class="fixed bottom-8 right-8 z-50 bg-[#00478d] hover:bg-[#003d7c] text-white p-4 sm:pr-6 sm:pl-5 rounded-full shadow-[0_8px_30px_rgb(0,71,141,0.3)] flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 group">
+        <span
+            class="material-symbols-outlined text-[24px] group-hover:rotate-90 transition-transform duration-300">add</span>
+        <span class="font-extrabold text-[15px] tracking-wide hidden sm:block">New Record</span>
+    </button>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal-backdrop items-center justify-center p-4">
+        <div
+            class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-red-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div
+                    class="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-red-100">
+                    <span class="material-symbols-outlined text-3xl">logout</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Confirm Logout</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">Are you sure you want to log out? Any
+                    unsaved changes in the current session may be lost.</p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('logoutModal')"
+                        class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button onclick="window.location.href='screen1-landing.html'"
+                        class="flex-1 px-6 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-red-900/20 active:scale-[0.98]">Log
+                        Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm End Visit Modal -->
+    <div id="confirmEndModal" class="modal-backdrop items-center justify-center p-4">
+        <div
+            class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div
+                    class="w-16 h-16 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-amber-100">
+                    <span class="material-symbols-outlined text-3xl">timer_off</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">End Patient Visit?</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">This will finalize the current
+                    clinical session for this patient. You can still view details in history.</p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('confirmEndModal')"
+                        class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button onclick="hideModal('confirmEndModal'); setTimeout(() => showModal('successEndModal'), 400);"
+                        class="flex-1 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-amber-900/20 active:scale-[0.98]">End
+                        Session</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successEndModal" class="modal-backdrop items-center justify-center p-4">
+        <div
+            class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div
+                    class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-emerald-100">
+                    <span class="material-symbols-outlined text-3xl">check_circle</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Session Completed</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">The patient visit has been
+                    successfully ended and recorded in the database.</p>
+                <div class="w-full">
+                    <button onclick="hideModal('successEndModal')"
+                        class="w-full px-6 py-3.5 bg-primary hover:bg-[#003d7c] text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-900/20 active:scale-[0.98]">Great,
+                        Thanks</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Assess Patient Modal -->
+    <div id="confirmAssessModal" class="modal-backdrop items-center justify-center p-4">
+        <div
+            class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div
+                    class="w-16 h-16 bg-blue-50 text-primary rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-blue-100">
+                    <span class="material-symbols-outlined text-3xl">clinical_notes</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Start Assessment</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">Ready to begin the physical
+                    assessment and record clinical findings for this patient?</p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('confirmAssessModal')"
+                        class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button onclick="window.location.href='screen6-staff-record-detail.html'"
+                        class="flex-1 px-6 py-3.5 bg-primary hover:bg-[#003d7c] text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-900/20 active:scale-[0.98]">Begin
+                        Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Did Not Wait Modal -->
+    <div id="confirmWaitModal" class="modal-backdrop items-center justify-center p-4">
+        <div
+            class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-slate-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div
+                    class="w-16 h-16 bg-slate-50 text-slate-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-slate-100">
+                    <span class="material-symbols-outlined text-3xl">person_off</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Mark as "Did Not Wait"</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">This will cancel the current visit
+                    session for this patient. This action will be logged in their record history.</p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('confirmWaitModal')"
+                        class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button
+                        onclick="hideModal('confirmWaitModal'); setTimeout(() => showModal('successCancelModal'), 400);"
+                        class="flex-1 px-6 py-3.5 bg-slate-600 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-slate-900/20 active:scale-[0.98]">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Cancel Modal -->
+    <div id="successCancelModal" class="modal-backdrop items-center justify-center p-4">
+        <div
+            class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-slate-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div
+                    class="w-16 h-16 bg-slate-50 text-slate-500 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-slate-100">
+                    <span class="material-symbols-outlined text-3xl">block</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Session Cancelled</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">The visit session has been marked as
+                    "Did Not Wait" and successfully removed from active queue.</p>
+                <div class="w-full">
+                    <button onclick="hideModal('successCancelModal')"
+                        class="w-full px-6 py-3.5 bg-slate-800 hover:bg-black text-white font-bold rounded-2xl transition-all shadow-lg shadow-slate-900/20 active:scale-[0.98]">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Filter Modal -->
+    <div id="advancedFilterModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl border border-outline-variant/10">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary/5 text-primary rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined">filter_alt</span>
+                    </div>
+                    <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59]">Advanced Filters</h3>
+                </div>
+                <button onclick="hideModal('advancedFilterModal')" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Filter by Purpose</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="purpose" value="ape" class="peer sr-only">
+                            <div class="px-4 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold text-xs peer-checked:bg-primary/5 peer-checked:text-primary peer-checked:border-primary/20 transition-all text-center">APE</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="purpose" value="monitoring" class="peer sr-only">
+                            <div class="px-4 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold text-xs peer-checked:bg-primary/5 peer-checked:text-primary peer-checked:border-primary/20 transition-all text-center">Health Monitoring</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="purpose" value="pain" class="peer sr-only">
+                            <div class="px-4 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold text-xs peer-checked:bg-primary/5 peer-checked:text-primary peer-checked:border-primary/20 transition-all text-center">Pain Management</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="purpose" value="dental" class="peer sr-only">
+                            <div class="px-4 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold text-xs peer-checked:bg-primary/5 peer-checked:text-primary peer-checked:border-primary/20 transition-all text-center">Dental Consult</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="purpose" value="wound" class="peer sr-only">
+                            <div class="px-4 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold text-xs peer-checked:bg-primary/5 peer-checked:text-primary peer-checked:border-primary/20 transition-all text-center">Wound Care</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Filter by Staff</label>
+                    <div class="relative">
+                        <select id="staffFilter" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800 appearance-none bg-none">
+                            <option value="all">All Staff Members</option>
+                            <option value="dizon">Dr. Dizon</option>
+                            <option value="sarapuddin">Dr. Sarapuddin</option>
+                            <option value="mortil">N. Mortil</option>
+                            <option value="pena">N. Peña</option>
+                        </select>
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-6 border-t border-slate-100">
+                    <button onclick="resetFilters()" class="flex-1 px-6 py-4 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all">Reset All</button>
+                    <button onclick="applyAdvancedFilters()" class="flex-1 px-6 py-4 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-blue-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStatusFilter = 'all';
+
+        function showModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('show'), 10);
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function hideModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        }
+
+        function setStatusFilter(status) {
+            currentStatusFilter = status;
+            
+            // Update Tab UI
+            document.querySelectorAll('.status-tab').forEach(tab => {
+                if (tab.dataset.filter === status) {
+                    tab.classList.remove('border-transparent', 'text-slate-500');
+                    tab.classList.add('border-primary', 'text-primary');
+                } else {
+                    tab.classList.remove('border-primary', 'text-primary');
+                    tab.classList.add('border-transparent', 'text-slate-500');
+                }
+            });
+
+            updateFilters();
+        }
+
+        function updateFilters() {
+            const searchQuery = document.getElementById('patientSearch').value.toLowerCase();
+            const staffValue = document.getElementById('staffFilter').value;
+            const selectedPurposes = Array.from(document.querySelectorAll('input[name="purpose"]:checked')).map(cb => cb.value);
+            
+            const rows = document.querySelectorAll('.patient-row');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const status = row.dataset.status;
+                const purpose = row.dataset.purpose;
+                const staff = row.dataset.staff;
+                const searchText = row.dataset.search.toLowerCase();
+                
+                const matchesStatus = currentStatusFilter === 'all' || status === currentStatusFilter;
+                const matchesSearch = searchQuery === '' || searchText.includes(searchQuery);
+                const matchesStaff = staffValue === 'all' || staff === staffValue;
+                const matchesPurpose = selectedPurposes.length === 0 || selectedPurposes.includes(purpose);
+
+                if (matchesStatus && matchesSearch && matchesStaff && matchesPurpose) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            updateFilterChips(searchQuery, staffValue, selectedPurposes);
+        }
+
+        function updateFilterChips(search, staff, purposes) {
+            const container = document.getElementById('chipsContainer');
+            const wrapper = document.getElementById('activeFilterChips');
+            container.innerHTML = '';
+
+            let hasFilters = false;
+
+            // Status Chip
+            if (currentStatusFilter !== 'all') {
+                addChip('Status: ' + currentStatusFilter.charAt(0).toUpperCase() + currentStatusFilter.slice(1), () => setStatusFilter('all'));
+                hasFilters = true;
+            }
+
+            // Search Chip
+            if (search) {
+                addChip('Search: "' + search + '"', () => {
+                    document.getElementById('patientSearch').value = '';
+                    updateFilters();
+                });
+                hasFilters = true;
+            }
+
+            // Staff Chip
+            if (staff !== 'all') {
+                const staffName = document.querySelector(`#staffFilter option[value="${staff}"]`).text;
+                addChip('Staff: ' + staffName, () => {
+                    document.getElementById('staffFilter').value = 'all';
+                    updateFilters();
+                });
+                hasFilters = true;
+            }
+
+            // Purpose Chips
+            purposes.forEach(p => {
+                const label = getPurposeLabel(p);
+                addChip('Purpose: ' + label, () => {
+                    document.querySelector(`input[name="purpose"][value="${p}"]`).checked = false;
+                    updateFilters();
+                });
+                hasFilters = true;
+            });
+
+            if (hasFilters) {
+                wrapper.classList.remove('hidden');
+                wrapper.classList.add('flex');
+            } else {
+                wrapper.classList.add('hidden');
+                wrapper.classList.remove('flex');
+            }
+        }
+
+        function addChip(text, onRemove) {
+            const chip = document.createElement('div');
+            chip.className = 'flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] font-bold border border-slate-200';
+            chip.innerHTML = `
+                <span>${text}</span>
+                <button class="hover:text-red-500 transition-colors flex items-center">
+                    <span class="material-symbols-outlined text-[14px]">close</span>
+                </button>
+            `;
+            chip.querySelector('button').onclick = onRemove;
+            document.getElementById('chipsContainer').appendChild(chip);
+        }
+
+        function getPurposeLabel(val) {
+            const labels = {
+                'ape': 'APE',
+                'monitoring': 'Health Monitoring',
+                'pain': 'Pain Management',
+                'dental': 'Dental Consult',
+                'wound': 'Wound Care'
+            };
+            return labels[val] || val;
+        }
+
+        function applyAdvancedFilters() {
+            hideModal('advancedFilterModal');
+            updateFilters();
+        }
+
+        function resetFilters() {
+            document.getElementById('patientSearch').value = '';
+            document.querySelectorAll('input[name="purpose"]').forEach(cb => cb.checked = false);
+            document.getElementById('staffFilter').value = 'all';
+            setStatusFilter('all');
+        }
+
+        function showLogoutModal() { showModal('logoutModal'); }
+        function hideLogoutModal() { hideModal('logoutModal'); }
+
+        // Close on backdrop click
+        ['logoutModal', 'confirmEndModal', 'successEndModal', 'confirmAssessModal', 'confirmWaitModal', 'successCancelModal', 'advancedFilterModal'].forEach(id => {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === this) hideModal(id);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PLP ClinicConnect - Inventory & Tracking</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00478d",
+                        "primary-fixed": "#d6e3ff",
+                        "primary-container": "#005eb8",
+                        "on-primary": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c2c6d4"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-backdrop.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-backdrop.show .modal-content {
+            transform: scale(1);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-btn.active {
+            background-color: white;
+            color: #00478d;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        
+        /* Toast Animation */
+        @keyframes toast-in {
+            from { transform: translateX(120%); }
+            to { transform: translateX(0); }
+        }
+        .toast-item {
+            animation: toast-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface h-screen flex flex-col overflow-hidden relative">
+    <!-- Top Header -->
+    <header
+        class="w-full px-8 py-4 shrink-0 flex justify-between items-center bg-white border-b border-outline-variant/20 shadow-sm relative z-20">
+        <div class="flex items-center gap-2.5">
+            <div
+                class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-[18px] font-bold">inventory_2</span>
+            </div>
+            <span class="font-headline font-extrabold text-base tracking-tight text-[#1c2a59]">PLP Clinic<span
+                    class="text-[#004d9c]">Connect</span></span>
+        </div>
+        <nav class="hidden md:flex items-center gap-6 lg:gap-8">
+            <a href="screen5-staff-dashboard.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Dashboard</a>
+            <a href="screen6-staff-record-detail.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Patient
+                Records</a>
+            <a href="screen10-staff-inventory.html"
+                class="text-xs font-bold text-primary border-b-2 border-primary py-1 tracking-wide">Inventory</a>
+            <a href="screen11-staff-reports.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Reports</a>
+            <a href="screen9-staff-settings.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Settings</a>
+            <div class="w-px h-4 bg-slate-200 mx-1"></div>
+            <a href="javascript:void(0)" onclick="showModal('logoutModal')"
+                class="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-red-600 transition-colors py-1 tracking-wide">
+                Logout
+                <span class="material-symbols-outlined text-[16px]">logout</span>
+            </a>
+        </nav>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center bg-surface w-full p-6 lg:p-10 overflow-y-auto">
+        <div class="max-w-7xl w-full space-y-8 pb-20">
+            <!-- Title & Quick Stats -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <h1 class="font-headline text-3xl md:text-4xl font-extrabold text-[#1c2a59] tracking-tight">
+                        Inventory & Tracking</h1>
+                    <p class="text-sm font-bold text-slate-500 mt-1">Manage clinic supplies and equipment lending</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="showModal('addMedicineModal')"
+                        class="px-5 py-3 bg-primary text-white rounded-2xl flex items-center gap-2 text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                        <span class="material-symbols-outlined text-[20px]">medication</span>
+                        + Medicine
+                    </button>
+                    <button onclick="showModal('addEquipmentModal')"
+                        class="px-5 py-3 bg-white text-primary border border-primary/20 rounded-2xl flex items-center gap-2 text-sm font-bold shadow-sm hover:bg-slate-50 active:scale-95 transition-all">
+                        <span class="material-symbols-outlined text-[20px]">home_repair_service</span>
+                        + Equipment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-2xl w-fit">
+                <button onclick="switchTab('medicine')" id="tab-medicine"
+                    class="tab-btn active px-8 py-4 rounded-2xl font-bold text-sm transition-all flex items-center gap-3 text-slate-500 hover:bg-slate-50">
+                    <span class="material-symbols-outlined">pill</span>
+                    Medicine Inventory
+                </button>
+                <button onclick="switchTab('equipment')" id="tab-equipment"
+                    class="tab-btn px-8 py-4 rounded-2xl font-bold text-sm transition-all flex items-center gap-3 text-slate-500 hover:bg-slate-50">
+                    <span class="material-symbols-outlined">medical_services</span>
+                    Equipment Tracking
+                </button>
+                <button onclick="switchTab('archived')" id="tab-archived"
+                    class="tab-btn px-8 py-4 rounded-2xl font-bold text-sm transition-all flex items-center gap-3 text-slate-500 hover:bg-slate-50">
+                    <span class="material-symbols-outlined">archive</span>
+                    Archived Records
+                </button>
+            </div>
+
+            <!-- Medicine Inventory Tab -->
+            <div id="medicine-content" class="tab-content active space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-[2rem] border border-outline-variant/20 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined">check_circle</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">In Stock</p>
+                            <p class="text-2xl font-headline font-extrabold text-slate-800">42 Items</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] border border-outline-variant/20 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined">warning</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Low Stock</p>
+                            <p class="text-2xl font-headline font-extrabold text-slate-800">3 Items</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] border border-outline-variant/20 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined">error</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Out of Stock</p>
+                            <p class="text-2xl font-headline font-extrabold text-slate-800">0 Items</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medicine Table -->
+                <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50/50 border-b border-outline-variant/10">
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Medicine Name</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Batch / Lot</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Stock Level</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Unit</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Expiry Date</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/10">
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Paracetamol 500mg</p>
+                                    <p class="text-xs text-slate-400">Analgesic / Antipyretic</p>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">LOT-2024-001</td>
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                            <span class="block h-full bg-emerald-500 w-3/4"></span>
+                                        </span>
+                                        <span class="text-sm font-bold text-slate-600">150 / 200</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Tablets</td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Dec 2026</td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="showModal('editMedicineModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                    <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                </td>
+                            </tr>
+                            <!-- Second Batch Example -->
+                            <tr class="bg-blue-50/20">
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Paracetamol 500mg</p>
+                                    <p class="text-xs text-slate-400">New Shipment</p>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">LOT-2024-088</td>
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                            <span class="block h-full bg-emerald-500 w-full"></span>
+                                        </span>
+                                        <span class="text-sm font-bold text-slate-600">500 / 500</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Tablets</td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Aug 2027</td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="showModal('editMedicineModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                    <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Ibuprofen 200mg</p>
+                                    <p class="text-xs text-slate-400">NSAID</p>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">LOT-2024-012</td>
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                            <span class="block h-full bg-amber-500 w-1/5"></span>
+                                        </span>
+                                        <span class="text-sm font-bold text-amber-600">12 / 60</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Capsules</td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Aug 2025</td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="showModal('editMedicineModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                    <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Amoxicillin 500mg</p>
+                                    <p class="text-xs text-slate-400">Antibiotic</p>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">LOT-2023-144</td>
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                            <span class="block h-full bg-emerald-500 w-1/2"></span>
+                                        </span>
+                                        <span class="text-sm font-bold text-slate-600">50 / 100</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Capsules</td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">May 2026</td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="showModal('editMedicineModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                    <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Cetirizine 10mg</p>
+                                    <p class="text-xs text-slate-400">Antihistamine</p>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">LOT-2024-052</td>
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                            <span class="block h-full bg-emerald-500 w-[90%]"></span>
+                                        </span>
+                                        <span class="text-sm font-bold text-slate-600">90 / 100</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Tablets</td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Oct 2026</td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="showModal('editMedicineModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                    <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Mefenamic Acid 500mg</p>
+                                    <p class="text-xs text-slate-400">NSAID / Pain Relief</p>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">LOT-2023-210</td>
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                            <span class="block h-full bg-amber-500 w-[15%]"></span>
+                                        </span>
+                                        <span class="text-sm font-bold text-amber-600">8 / 50</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Capsules</td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Jan 2025</td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="showModal('editMedicineModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                    <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Equipment Tracking Tab -->
+            <div id="equipment-content" class="tab-content space-y-10">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-[2rem] border border-outline-variant/20 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-primary flex items-center justify-center">
+                            <span class="material-symbols-outlined">outbound</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Currently Out</p>
+                            <p class="text-2xl font-headline font-extrabold text-slate-800">5 Items</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] border border-outline-variant/20 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined">history</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Returned Today</p>
+                            <p class="text-2xl font-headline font-extrabold text-slate-800">12 Items</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] border border-outline-variant/20 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined">inventory</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Assets</p>
+                            <p class="text-2xl font-headline font-extrabold text-slate-800">32 Items</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asset Inventory Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between px-2">
+                        <h3 class="font-headline text-lg font-extrabold text-[#1c2a59]">Asset Inventory</h3>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Unique Items: 8</span>
+                    </div>
+                    <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm overflow-hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/50 border-b border-outline-variant/10">
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Equipment Item</th>
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Stock</th>
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Available</th>
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant/10">
+                                <tr>
+                                    <td class="px-8 py-5">
+                                        <p class="font-bold text-slate-800">Infrared Thermometer</p>
+                                        <p class="text-xs text-slate-400">High-precision digital</p>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-bold text-slate-600">10 Units</td>
+                                    <td class="px-8 py-5">
+                                        <span class="text-sm font-bold text-emerald-600">8 Available</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-100">Ready</span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <button onclick="showModal('editEquipmentModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                        <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-8 py-5">
+                                        <p class="font-bold text-slate-800">Heating Pad (Electric)</p>
+                                        <p class="text-xs text-slate-400">Washable cover</p>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-bold text-slate-600">15 Units</td>
+                                    <td class="px-8 py-5">
+                                        <span class="text-sm font-bold text-amber-600">2 Available</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-[10px] font-black uppercase tracking-widest border border-amber-100">Low</span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <button onclick="showModal('editItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                        <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-8 py-5">
+                                        <p class="font-bold text-slate-800">Nebulizer Kit</p>
+                                        <p class="text-xs text-slate-400">Portable compressor</p>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-bold text-slate-600">7 Units</td>
+                                    <td class="px-8 py-5">
+                                        <span class="text-sm font-bold text-slate-600">5 Available</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-100">Ready</span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <button onclick="showModal('editEquipmentModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                        <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-8 py-5">
+                                        <p class="font-bold text-slate-800">Pulse Oximeter</p>
+                                        <p class="text-xs text-slate-400">Fingertip sensor</p>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-bold text-slate-600">12 Units</td>
+                                    <td class="px-8 py-5">
+                                        <span class="text-sm font-bold text-emerald-600">12 Available</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-100">Ready</span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <button onclick="showModal('editEquipmentModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                        <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-8 py-5">
+                                        <p class="font-bold text-slate-800">BP Monitor (Digital)</p>
+                                        <p class="text-xs text-slate-400">Automatic cuff</p>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-bold text-slate-600">5 Units</td>
+                                    <td class="px-8 py-5">
+                                        <span class="text-sm font-bold text-red-600">0 Available</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span class="px-3 py-1 rounded-full bg-red-50 text-red-700 text-[10px] font-black uppercase tracking-widest border border-red-100">In Use</span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <button onclick="showModal('editEquipmentModal')" class="p-2 hover:bg-slate-50 rounded-lg text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                                        <button onclick="showModal('archiveItemModal')" class="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors ml-1"><span class="material-symbols-outlined">archive</span></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Active Loans Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between px-2">
+                        <h3 class="font-headline text-lg font-extrabold text-[#1c2a59]">Active Loans & Borrowing History</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">5 Currently Borrowed</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm overflow-hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/50 border-b border-outline-variant/10">
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Item Name</th>
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Borrower</th>
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Borrowed At</th>
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Condition upon Return</th>
+                                    <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions / Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant/10">
+                                <tr>
+                                    <td class="px-8 py-5">
+                                        <p class="font-bold text-slate-800">Infrared Thermometer</p>
+                                        <p class="text-xs text-slate-400">SN: THERM-002</p>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <p class="text-sm font-bold text-slate-700">Maria Santos</p>
+                                        <p class="text-[10px] font-medium text-slate-400 uppercase">2021-8831</p>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-semibold text-slate-600">10:45 AM</td>
+                                    <td class="px-8 py-5">
+                                        <span class="px-3 py-1 rounded-full bg-blue-50 text-primary text-[10px] font-black uppercase tracking-widest border border-blue-100">Borrowed</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span class="text-[10px] font-bold text-slate-300 uppercase">—</span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <button onclick="showModal('returnItemModal')" class="px-4 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-extrabold transition-all active:scale-95 border border-emerald-200">Return</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-8 py-5">
+                                        <p class="font-bold text-slate-800">Heating Pad (Electric)</p>
+                                        <p class="text-xs text-slate-400">SN: PAD-014</p>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <p class="text-sm font-bold text-slate-700">Alice Reyes</p>
+                                        <p class="text-[10px] font-medium text-slate-400 uppercase">STAFF-102</p>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-semibold text-slate-600">11:05 AM</td>
+                                    <td class="px-8 py-5">
+                                        <span class="px-3 py-1 rounded-full bg-blue-50 text-primary text-[10px] font-black uppercase tracking-widest border border-blue-100">Borrowed</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span class="text-[10px] font-bold text-slate-300 uppercase">—</span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <button class="px-4 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-extrabold transition-all active:scale-95 border border-emerald-200">Return</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-8 py-5">
+                                        <p class="font-bold text-slate-800">Nebulizer Kit</p>
+                                        <p class="text-xs text-slate-400">SN: NEB-001</p>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <p class="text-sm font-bold text-slate-700">John Doe</p>
+                                        <p class="text-[10px] font-medium text-slate-400 uppercase">2023-0142</p>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-semibold text-slate-600">09:14 AM</td>
+                                    <td class="px-8 py-5">
+                                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-100">Returned</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-100">Good</span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <div class="flex flex-col items-end">
+                                            <p class="text-[10px] font-bold text-slate-400">Returned at 10:30 AM</p>
+                                            <p class="text-[11px] font-medium text-slate-500 italic mt-1 max-w-[200px]">"Returned in perfect condition, fully charged."</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Archived Records Tab -->
+            <div id="archived-content" class="tab-content space-y-6">
+                <div class="flex items-center justify-between mb-2 px-2">
+                    <div>
+                        <h2 class="font-headline text-2xl font-extrabold text-[#1c2a59]">Archived Inventory</h2>
+                        <p class="text-slate-500 font-medium text-sm">Historical records and decommissioned items</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50/50 border-b border-outline-variant/10">
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Item Name</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Category</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Archived Date</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Reason</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/10">
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Ascorbic Acid (Old Batch)</p>
+                                    <p class="text-xs text-slate-400">Vitamin C</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-widest border border-blue-100">Medicine</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Apr 15, 2024</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Expired batch</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Stethoscope (Classic)</p>
+                                    <p class="text-xs text-slate-400">Manual acoustic</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-black uppercase tracking-widest border border-purple-100">Equipment</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Mar 22, 2024</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Decommissioned / Damaged</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Cough Syrup (Bulk 5L)</p>
+                                    <p class="text-xs text-slate-400">Expectorant</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-widest border border-blue-100">Medicine</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Feb 10, 2024</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Storage damage / Leakage</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Digital Scale (A-100)</p>
+                                    <p class="text-xs text-slate-400">Precision weighing</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-black uppercase tracking-widest border border-purple-100">Equipment</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Jan 05, 2024</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Replaced with newer model</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Antiseptic Solution</p>
+                                    <p class="text-xs text-slate-400">Isopropyl Alcohol 70%</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-widest border border-blue-100">Medicine</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Dec 12, 2023</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Contamination risk identified</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Omeprazole 20mg</p>
+                                    <p class="text-xs text-slate-400">Antacid / GERD</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-widest border border-blue-100">Medicine</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Nov 30, 2023</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Expired batch (LOT-2022)</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Wheelchair (Standard)</p>
+                                    <p class="text-xs text-slate-400">Foldable model</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-black uppercase tracking-widest border border-purple-100">Equipment</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Oct 05, 2023</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Structural damage to frame</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Surgical Masks (3-Ply)</p>
+                                    <p class="text-xs text-slate-400">Box of 50</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-widest border border-blue-100">Medicine</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Sep 20, 2023</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Water damage to storage box</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Infrared Thermometer</p>
+                                    <p class="text-xs text-slate-400">Model T-800</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-black uppercase tracking-widest border border-purple-100">Equipment</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Aug 12, 2023</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Sensor calibration failure</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Heating Pad (Electric)</p>
+                                    <p class="text-xs text-slate-400">MediWarm 2.0</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-black uppercase tracking-widest border border-purple-100">Equipment</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Jul 25, 2023</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Frayed power cable / Safety risk</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-8 py-5">
+                                    <p class="font-bold text-slate-800">Oxygen Tank (Small)</p>
+                                    <p class="text-xs text-slate-400">Portable cylinder</p>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-black uppercase tracking-widest border border-purple-100">Equipment</span>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-semibold text-slate-600">Jun 18, 2023</td>
+                                <td class="px-8 py-5">
+                                    <span class="text-xs font-medium text-slate-500 italic">Expired certification / Retired</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <button onclick="confirmRestore()" class="px-4 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-xs font-extrabold transition-all border border-primary/10">Restore</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Medicine Modal -->
+    <div id="addMedicineModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl border border-outline-variant/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined">pill</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59]">Add New Medicine</h3>
+            </div>
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Medicine Name</label>
+                    <input type="text" placeholder="e.g. Paracetamol 500mg" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Initial Stock</label>
+                        <input type="number" placeholder="100" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Unit</label>
+                        <input type="text" placeholder="pcs / tabs" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Expiry Date</label>
+                    <input type="date" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div class="flex gap-3 pt-6">
+                    <button onclick="hideModal('addMedicineModal')" class="flex-1 px-6 py-3.5 bg-slate-50 text-slate-600 font-bold rounded-2xl">Cancel</button>
+                    <button onclick="hideModal('addMedicineModal'); showToast('New medicine added successfully');" class="flex-1 px-6 py-3.5 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-blue-900/20">Add Medicine</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Equipment Modal -->
+    <div id="addEquipmentModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl border border-outline-variant/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-blue-50 text-primary rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined">home_repair_service</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59]">Add New Equipment</h3>
+            </div>
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Equipment Name</label>
+                    <input type="text" placeholder="e.g. Infrared Thermometer" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Total Units</label>
+                    <input type="number" placeholder="5" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Serial Number (Optional)</label>
+                    <input type="text" placeholder="e.g. SN-123456" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div class="flex gap-3 pt-6">
+                    <button onclick="hideModal('addEquipmentModal')" class="flex-1 px-6 py-3.5 bg-slate-50 text-slate-600 font-bold rounded-2xl">Cancel</button>
+                    <button onclick="hideModal('addEquipmentModal'); showToast('New equipment added successfully');" class="flex-1 px-6 py-3.5 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-blue-900/20">Add Equipment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Medicine Modal -->
+    <div id="editMedicineModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl border border-outline-variant/10">
+            <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-6">Edit Medicine</h3>
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Medicine Name</label>
+                    <input type="text" value="Paracetamol 500mg" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Current Stock</label>
+                        <input type="number" value="150" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Unit</label>
+                        <input type="text" value="Tablets" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Expiry Date</label>
+                    <input type="date" value="2026-12-31" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div class="flex gap-3 pt-6">
+                    <button onclick="hideModal('editMedicineModal')" class="flex-1 px-6 py-3.5 bg-slate-50 text-slate-600 font-bold rounded-2xl">Cancel</button>
+                    <button onclick="hideModal('editMedicineModal'); showToast('Medicine details updated');" class="flex-1 px-6 py-3.5 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-blue-900/20">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Equipment Modal -->
+    <div id="editEquipmentModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl border border-outline-variant/10">
+            <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-6">Edit Equipment</h3>
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Equipment Name</label>
+                    <input type="text" value="Infrared Thermometer" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Total Units</label>
+                    <input type="number" value="10" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Serial Number (Optional)</label>
+                    <input type="text" value="SN: THERM-002" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800">
+                </div>
+                <div class="flex gap-3 pt-6">
+                    <button onclick="hideModal('editEquipmentModal')" class="flex-1 px-6 py-3.5 bg-slate-50 text-slate-600 font-bold rounded-2xl">Cancel</button>
+                    <button onclick="hideModal('editEquipmentModal'); showToast('Equipment details updated');" class="flex-1 px-6 py-3.5 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-blue-900/20">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Return Item Modal -->
+    <div id="returnItemModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl border border-outline-variant/10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-3xl">assignment_return</span>
+                </div>
+                <div>
+                    <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59]">Return Equipment</h3>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Confirming return to inventory</p>
+                </div>
+            </div>
+            
+            <div class="bg-slate-50 rounded-2xl p-5 mb-6 border border-slate-200/50">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Item</span>
+                    <span class="text-sm font-bold text-slate-800">Infrared Thermometer</span>
+                </div>
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Borrower</span>
+                    <span class="text-sm font-bold text-slate-800">Maria Santos (2021-8831)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Date Borrowed</span>
+                    <span class="text-sm font-bold text-slate-600">Today, 10:45 AM</span>
+                </div>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Equipment Condition</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="condition" class="peer sr-only" checked>
+                            <div class="px-3 py-2.5 rounded-xl border border-slate-200 text-slate-500 font-bold text-[10px] uppercase tracking-widest peer-checked:bg-emerald-50 peer-checked:text-emerald-700 peer-checked:border-emerald-200 text-center transition-all">Good</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="condition" class="peer sr-only">
+                            <div class="px-3 py-2.5 rounded-xl border border-slate-200 text-slate-500 font-bold text-[10px] uppercase tracking-widest peer-checked:bg-amber-50 peer-checked:text-amber-700 peer-checked:border-amber-200 text-center transition-all">Defective</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="condition" class="peer sr-only">
+                            <div class="px-3 py-2.5 rounded-xl border border-slate-200 text-slate-500 font-bold text-[10px] uppercase tracking-widest peer-checked:bg-red-50 peer-checked:text-red-700 peer-checked:border-red-200 text-center transition-all">Lost</div>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Return Notes (Optional)</label>
+                    <textarea rows="2" placeholder="Any specific issues or observations..." class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-primary focus:ring-0 outline-none transition-all text-sm font-bold text-slate-800 resize-none"></textarea>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button onclick="hideModal('returnItemModal')" class="flex-1 px-6 py-3.5 bg-slate-50 text-slate-600 font-bold rounded-2xl">Cancel</button>
+                    <button onclick="hideModal('returnItemModal'); showToast('Item return processed successfully');" class="flex-1 px-6 py-3.5 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-blue-900/20">Process Return</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Archive Confirmation Modal -->
+    <div id="archiveItemModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-slate-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center">
+                <div class="w-16 h-16 bg-slate-50 text-slate-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-slate-100">
+                    <span class="material-symbols-outlined text-3xl">archive</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2 text-center">Archive Item?</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8 text-center">Please specify the reason for moving this item to the archives.</p>
+                
+                <div class="w-full text-left mb-8 space-y-5">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Reason for Archiving</label>
+                        <div class="relative">
+                            <select id="archive-reason"
+                                class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1.25rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none bg-none">
+                                <option>Expired Batch</option>
+                                <option>Damaged / Defective</option>
+                                <option>Replaced with Newer Model</option>
+                                <option>Contamination Risk</option>
+                                <option>Inventory Adjustment</option>
+                                <option>Other / Special Case</option>
+                            </select>
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Additional Notes (Optional)</label>
+                        <textarea rows="2" placeholder="e.g. Broken screen, leaked during storage..."
+                            class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('archiveItemModal')" class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button onclick="confirmArchive()" class="flex-1 px-6 py-3.5 bg-[#1c2a59] text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-900/20 active:scale-[0.98]">Confirm Archive</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Restore Confirmation Modal -->
+    <div id="restoreItemModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-emerald-100">
+                    <span class="material-symbols-outlined text-3xl">unarchive</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Restore Item?</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">Move this item back to the active inventory list? It will be visible and available for tracking again.</p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('restoreItemModal')" class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button onclick="executeRestore()" class="flex-1 px-6 py-3.5 bg-emerald-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-emerald-900/20 active:scale-[0.98]">Confirm Restore</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal Removed in favor of Toast -->
+
+    <!-- Modals -->
+    <div id="logoutModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-3xl">logout</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Confirm Logout</h3>
+                <p class="text-slate-500 font-medium text-sm mb-8">Are you sure you want to log out?</p>
+                <div class="flex gap-3 w-full">
+                    <button onclick="hideModal('logoutModal')" class="flex-1 px-6 py-3.5 bg-slate-50 text-slate-600 font-bold rounded-2xl">Cancel</button>
+                    <button onclick="window.location.href='screen1-landing.html'" class="flex-1 px-6 py-3.5 bg-red-600 text-white font-bold rounded-2xl shadow-lg shadow-red-900/20">Log Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals (Add/Edit omitted for brevity as they remain consistent) -->
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-8 right-8 z-[2000] flex flex-col gap-3 pointer-events-none"></div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-item pointer-events-auto flex items-center gap-4 bg-white border border-slate-100 p-4 pr-6 rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all duration-300`;
+            
+            const icon = type === 'success' ? 'check_circle' : 'error';
+            const iconColor = type === 'success' ? 'text-emerald-500' : 'text-red-500';
+            const bgColor = type === 'success' ? 'bg-emerald-50' : 'bg-red-50';
+
+            toast.innerHTML = `
+                <div class="w-12 h-12 ${bgColor} ${iconColor} rounded-2xl flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl">${icon}</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Notification</p>
+                    <p class="text-sm font-bold text-slate-700 leading-tight">${message}</p>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function showModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        function switchTab(tab) {
+            // Hide all content
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            // Remove active state from all buttons
+            document.querySelectorAll('.tab-btn').forEach(l => l.classList.remove('active'));
+
+            // Show selected content
+            document.getElementById(tab + '-content').classList.add('active');
+            // Set active state on button
+            document.getElementById('tab-' + tab).classList.add('active');
+        }
+
+        function confirmArchive() {
+            const reason = document.getElementById('archive-reason').value;
+            hideModal('archiveItemModal');
+            setTimeout(() => {
+                showToast(`Item archived successfully: ${reason}`);
+            }, 400);
+        }
+
+        function confirmRestore() {
+            showModal('restoreItemModal');
+        }
+
+        function executeRestore() {
+            hideModal('restoreItemModal');
+            setTimeout(() => {
+                showToast("Item successfully restored to active inventory");
+            }, 400);
+        }
+
+        // Close on backdrop click
+        ['logoutModal', 'addMedicineModal', 'addEquipmentModal', 'editMedicineModal', 'editEquipmentModal', 'returnItemModal', 'archiveItemModal', 'restoreItemModal'].forEach(id => {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) hideModal(id);
+                });
+            }
+        });
+
+        // Handle URL parameters for tab switching
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+            const validTabs = ['medicine', 'equipment', 'archived'];
+            if (validTabs.includes(tab)) {
+                switchTab(tab);
+            }
+        });
+    </script>
+</body>
+</html>

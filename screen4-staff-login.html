@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PLP ClinicConnect - Staff Login</title>
+    <!-- Fonts: Manrope for headlines, Inter for body/labels -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#005db6",
+                        "on-primary-fixed-variant": "#00468c",
+                        "surface-variant": "#e1e3e4",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#d6e3ff",
+                        "inverse-primary": "#a9c7ff",
+                        "tertiary-container": "#9f4300",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "secondary-container": "#cbe7f5",
+                        "tertiary-fixed": "#ffdbcb",
+                        "tertiary": "#793100",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary-fixed-variant": "#793100",
+                        "on-surface": "#191c1d",
+                        "primary": "#00478d",
+                        "secondary-fixed-dim": "#afcbd8",
+                        "on-primary-fixed": "#001b3d",
+                        "on-secondary-container": "#4e6874",
+                        "on-tertiary-fixed": "#341100",
+                        "primary-fixed-dim": "#a9c7ff",
+                        "on-surface-variant": "#424752",
+                        "on-tertiary-container": "#ffcfb9",
+                        "secondary-fixed": "#cbe7f5",
+                        "surface-container-low": "#f3f4f5",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#005eb8",
+                        "background": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "outline": "#727783",
+                        "on-secondary-fixed-variant": "#304a55",
+                        "on-primary-container": "#c8daff",
+                        "surface": "#f8f9fa",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary-fixed": "#021f29",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#edeeef",
+                        "outline-variant": "#c2c6d4",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary": "#48626e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .cloud-shadow {
+            box-shadow: 0px 20px 40px rgba(25, 28, 29, 0.06);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 71, 141, 0.15);
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface h-screen flex flex-col overflow-hiddven">
+    <!-- Top Bar -->
+    <header
+        class="w-full px-8 py-3 shrink-0 flex justify-between items-center bg-white/5 border-b border-outline-variant/5">
+        <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 bg-primary text-white rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-[16px] font-bold"
+                    data-icon="clinical_notes">clinical_notes</span>
+            </div>
+            <span class="font-headline font-extrabold text-sm tracking-tight text-[#1c2a59]">PLP Clinic<span
+                    class="text-[#004d9c]">Connect</span></span>
+        </div>
+        <div class="flex items-center gap-4">
+        </div>
+    </header>
+
+    <main class="flex-1 flex items-center justify-center p-6 min-h-0 relative z-10">
+        <div class="max-w-5xl w-full">
+
+            <!-- Wide Bento Login Console -->
+            <div
+                class="bg-white rounded-[4rem] cloud-shadow border border-outline-variant/10 w-full relative overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[560px]">
+
+                <!-- Left Panel: Brand & Security -->
+                <div
+                    class="lg:col-span-5 bg-primary p-12 lg:p-16 text-white flex flex-col justify-between relative overflow-hidden">
+                    <!-- Security Grid Backdrop -->
+                    <div class="absolute inset-0 opacity-10 pointer-events-none"
+                        style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 32px 32px;">
+                    </div>
+                    <div class="absolute -top-20 -left-20 w-80 h-80 bg-white/10 rounded-full blur-[100px]"></div>
+
+                    <div class="relative">
+                        <div
+                            class="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-xl rounded-[2rem] mb-10 border border-white/20 shadow-2xl">
+                            <span class="material-symbols-outlined text-3xl text-white"
+                                data-icon="admin_panel_settings">admin_panel_settings</span>
+                        </div>
+                        <h1
+                            class="font-headline font-extrabold text-4xl lg:text-5xl tracking-tighter leading-none mb-6">
+                            Nurse's Station
+                        </h1>
+                        <p class="text-blue-100/70 font-medium text-sm lg:text-base leading-relaxed max-w-xs">
+                            Please authenticate your clinical credentials to access the management dashboard and patient
+                            logs.
+                        </p>
+                    </div>
+
+                    <div class="relative space-y-6">
+                        <div
+                            class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                            <span class="material-symbols-outlined text-blue-300" data-icon="security">security</span>
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-widest opacity-60">Security Protocol
+                                </p>
+                                <p class="text-xs font-bold">End-to-End Encryption Active</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between px-2">
+                            <p class="text-[9px] font-bold text-blue-200/50 uppercase tracking-[0.2em]">Authorized PLP
+                                Personnel Only</p>
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Login Form -->
+                <div class="lg:col-span-7 p-12 lg:p-20 flex flex-col justify-center relative">
+                    <div class="mb-12">
+                        <h2 class="font-headline text-3xl font-extrabold text-blue-950 tracking-tight mb-2">Welcome Back
+                        </h2>
+                        <p class="text-slate-400 font-medium text-sm">Enter your workstation ID and password</p>
+                    </div>
+
+                    <form class="space-y-8">
+                        <!-- Personnel ID -->
+                        <div class="space-y-3">
+                            <label
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Personnel
+                                ID</label>
+                            <div class="relative group">
+                                <span
+                                    class="absolute left-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 group-focus-within:text-primary transition-colors text-2xl"
+                                    data-icon="account_circle">account_circle</span>
+                                <input type="text" placeholder="e.g. STAFF-0922"
+                                    class="w-full pl-10 pr-0 py-4 bg-transparent border-b-2 border-slate-100 focus:border-primary transition-all text-base font-bold placeholder:text-slate-200 placeholder:font-medium">
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center px-1">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Security
+                                    Key</label>
+                                <a href="#"
+                                    class="text-[9px] font-bold text-primary uppercase tracking-widest hover:underline">Reset
+                                    Key</a>
+                            </div>
+                            <div class="relative group">
+                                <span
+                                    class="absolute left-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 group-focus-within:text-primary transition-colors text-2xl"
+                                    data-icon="lock_outline">lock_outline</span>
+                                <input type="password" placeholder="••••••••"
+                                    class="w-full pl-10 pr-0 py-4 bg-transparent border-b-2 border-slate-100 focus:border-primary transition-all text-base font-bold placeholder:text-slate-200 placeholder:font-medium">
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="pt-6 flex flex-col sm:flex-row gap-4">
+                            <button onclick="window.location.href='screen5-staff-dashboard.html'" type="button"
+                                class="flex-grow py-5 bg-blue-950 text-white font-bold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-xl shadow-blue-950/20 hover:shadow-blue-950/30">
+                                <span>Sign In to System</span>
+                                <span class="material-symbols-outlined text-xl" data-icon="login">login</span>
+                            </button>
+                            <button onclick="window.location.href='screen1-landing.html'" type="button"
+                                class="px-8 py-5 bg-slate-50 text-slate-400 font-bold rounded-2xl flex items-center justify-center border border-slate-100 active:scale-[0.98] transition-all hover:bg-slate-100">
+                                <span class="material-symbols-outlined" data-icon="close">close</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Console Footer (Internal) -->
+                    <div class="absolute bottom-8 left-12 right-12 flex justify-between items-center opacity-30">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Console Footer -->
+    <footer class="w-full py-6 px-12 shrink-0 bg-transparent relative z-10">
+        <div class="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+            <span>PLP Clinic Management Console</span>
+            <div class="flex gap-4 items-center">
+                <span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                <span>System Active</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Background Decoration -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden opacity-30">
+        <div class="absolute top-[20%] left-[-10%] w-[40%] h-[40%] bg-blue-100 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-[-10%] right-[10%] w-[30%] h-[30%] bg-blue-50 rounded-full blur-[80px]"></div>
+    </div>
+</body>
+
+</html>

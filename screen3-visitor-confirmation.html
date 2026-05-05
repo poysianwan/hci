@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PLP ClinicConnect - Check-in Confirmed</title>
+    <!-- Fonts: Manrope for headlines, Inter for body/labels -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#005db6",
+                        "on-primary-fixed-variant": "#00468c",
+                        "surface-variant": "#e1e3e4",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#d6e3ff",
+                        "inverse-primary": "#a9c7ff",
+                        "tertiary-container": "#9f4300",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "secondary-container": "#cbe7f5",
+                        "tertiary-fixed": "#ffdbcb",
+                        "tertiary": "#793100",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary-fixed-variant": "#793100",
+                        "on-surface": "#191c1d",
+                        "primary": "#00478d",
+                        "secondary-fixed-dim": "#afcbd8",
+                        "on-primary-fixed": "#001b3d",
+                        "on-secondary-container": "#4e6874",
+                        "on-tertiary-fixed": "#341100",
+                        "primary-fixed-dim": "#a9c7ff",
+                        "on-surface-variant": "#424752",
+                        "on-tertiary-container": "#ffcfb9",
+                        "secondary-fixed": "#cbe7f5",
+                        "surface-container-low": "#f3f4f5",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#005eb8",
+                        "background": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "outline": "#727783",
+                        "on-secondary-fixed-variant": "#304a55",
+                        "on-primary-container": "#c8daff",
+                        "surface": "#f8f9fa",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary-fixed": "#021f29",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#edeeef",
+                        "outline-variant": "#c2c6d4",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary": "#48626e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .cloud-shadow {
+            box-shadow: 0px 20px 40px rgba(25, 28, 29, 0.06);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface h-screen flex flex-col overflow-hidden">
+    <!-- Header Removed for cleaner UI matching the reference image -->
+
+    <main class="flex-1 flex items-center justify-center p-6 min-h-0 relative z-10">
+        <div class="max-w-4xl w-full">
+
+            <!-- Success Console Card -->
+            <div
+                class="bg-white rounded-[3.5rem] p-12 md:p-14 cloud-shadow border border-outline-variant/5 w-full relative overflow-hidden flex flex-col items-center text-center">
+
+                <!-- Large Success Backdrop -->
+                <div class="absolute -top-20 -right-20 w-96 h-96 bg-green-500/5 rounded-full blur-[100px]"></div>
+
+                <div class="relative flex flex-col items-center max-w-2xl w-full">
+                    <!-- Animation Icon -->
+                    <div
+                        class="w-24 h-24 bg-[#f2fbf4] text-[#1da44a] rounded-[2rem] flex items-center justify-center mb-8 shadow-[0_0_30px_rgba(29,164,74,0.15)] group">
+                        <span
+                            class="material-symbols-outlined text-5xl group-hover:scale-110 transition-transform duration-500"
+                            data-icon="check_circle">check_circle</span>
+                    </div>
+
+                    <h1 class="font-headline font-extrabold text-4xl md:text-5xl tracking-tighter text-[#1c2a59] mb-4">
+                        Registration <span class="text-[#1da44a]">Complete!</span>
+                    </h1>
+
+                    <p
+                        class="text-slate-500 font-medium text-base md:text-lg tracking-tight opacity-80 mb-10 max-w-[28rem] mx-auto">
+                        Your visit has been logged in the system. Please take a seat in the waiting<br>area.
+                    </p>
+
+                    <!-- Reference Dashboard -->
+                    <!-- Reference Dashboard -->
+                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                        <div
+                            class="p-8 bg-surface-container-low rounded-[2rem] border border-outline-variant/5 text-left relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-5">
+                                <span class="material-symbols-outlined text-6xl"
+                                    data-icon="fingerprint">fingerprint</span>
+                            </div>
+                            <span
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2">Reference
+                                Code</span>
+                            <span
+                                class="text-3xl font-mono font-black text-[#1c2a59] tracking-tight">#VIS-2026-0012</span>
+                        </div>
+                        <div
+                            class="p-8 bg-[#f2f8fc] rounded-[2rem] border border-blue-50 text-left relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-10">
+                                <span class="material-symbols-outlined text-[#1da44a] text-6xl"
+                                    data-icon="notifications_active">notifications_active</span>
+                            </div>
+                            <span
+                                class="text-[10px] font-black text-[#1da44a]/80 uppercase tracking-[0.2em] block mb-2">Next
+                                Step</span>
+                            <span class="text-xl font-bold text-[#0c4021] tracking-tight">Wait for your name to be
+                                called</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="w-full flex flex-col sm:flex-row gap-4 items-center">
+                        <button onclick="window.location.href='screen1-landing.html'"
+                            class="flex-grow py-5 px-10 bg-[#1c2a59] text-white font-bold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all hover:shadow-lg shadow-[#1c2a59]/20 hover:bg-[#152044]">
+                            <span class="material-symbols-outlined text-[18px]" data-icon="home">home</span>
+                            <span class="text-[15px]">Return to Main Screen</span>
+                        </button>
+                        <button
+                            class="w-full sm:w-auto p-5 bg-white text-slate-400 font-bold rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm active:scale-[0.98] transition-all hover:bg-slate-50">
+                            <span class="material-symbols-outlined text-[20px]" data-icon="print">print</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Console Footer -->
+    <footer
+        class="w-full py-6 px-12 shrink-0 bg-transparent relative z-10 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+        <div class="w-1/3 flex justify-start">
+            <span>PLP Clinic Management Console</span>
+        </div>
+
+        <!-- Auto-Redirect Hint -->
+        <div class="w-1/3 flex justify-center">
+            <div class="flex items-center gap-3 py-1.5 px-6 bg-white rounded-full border border-slate-100 shadow-sm">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-300 animate-pulse"></span>
+                <span
+                    class="text-[9px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">Redirecting
+                    in 15 seconds</span>
+            </div>
+        </div>
+
+        <div class="w-1/3 flex justify-end gap-2 items-center">
+            <span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+            <span>Current Time: 10:15 AM</span>
+        </div>
+    </footer>
+
+    <!-- Background Decoration -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden opacity-30">
+        <div class="absolute top-[20%] left-[-10%] w-[40%] h-[40%] bg-green-100 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-[-10%] right-[10%] w-[30%] h-[30%] bg-green-50 rounded-full blur-[80px]"></div>
+    </div>
+</body>
+
+</html>
+
+</html>

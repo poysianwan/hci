@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PLP ClinicConnect - Patient Record Details</title>
+    <!-- Fonts: Manrope for headlines, Inter for body/labels -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00478d",
+                        "primary-fixed": "#d6e3ff",
+                        "primary-container": "#005eb8",
+                        "on-primary": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c2c6d4"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-backdrop.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-backdrop.show .modal-content {
+            transform: scale(1);
+        }
+
+        /* Toast Animation */
+        @keyframes toast-in {
+            from { transform: translateX(120%); }
+            to { transform: translateX(0); }
+        }
+        .toast-item {
+            animation: toast-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Amendment Styles */
+        .field-modified {
+            border-color: #f59e0b !important;
+            background-color: #fffbeb !important;
+            position: relative;
+        }
+        .modified-indicator {
+            position: absolute;
+            right: -8px;
+            top: -8px;
+            background: #f59e0b;
+            color: white;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+            z-index: 10;
+        }
+        .original-value-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: #1c2a59;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 10px;
+            width: max-content;
+            max-width: 200px;
+            margin-bottom: 8px;
+            z-index: 50;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .field-modified:hover .original-value-tooltip {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface h-screen flex flex-col overflow-hidden">
+    <!-- Top Header -->
+    <header
+        class="w-full px-8 py-4 shrink-0 flex justify-between items-center bg-white border-b border-outline-variant/20 shadow-sm relative z-20">
+        <!-- Brand -->
+        <div class="flex items-center gap-2.5">
+            <div
+                class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-[18px] font-bold"
+                    data-icon="clinical_notes">clinical_notes</span>
+            </div>
+            <span class="font-headline font-extrabold text-base tracking-tight text-[#1c2a59]">PLP Clinic<span
+                    class="text-[#004d9c]">Connect</span></span>
+        </div>
+        <!-- Navigation -->
+        <nav class="hidden md:flex items-center gap-6 lg:gap-8">
+            <a href="screen5-staff-dashboard.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Dashboard</a>
+            <a href="screen6-staff-record-detail.html" class="text-xs font-bold text-primary border-b-2 border-primary py-1 tracking-wide">Patient
+                Records</a>
+            <a href="screen10-staff-inventory.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Inventory</a>
+            <a href="screen11-staff-reports.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Reports</a>
+            <a href="screen9-staff-settings.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Settings</a>
+            <div class="w-px h-4 bg-slate-200 mx-1"></div>
+            <a href="javascript:void(0)" onclick="showModal('logoutModal')"
+                class="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-red-600 transition-colors py-1 tracking-wide">
+                Logout
+                <span class="material-symbols-outlined text-[16px]" data-icon="logout">logout</span>
+            </a>
+        </nav>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center bg-surface w-full p-6 lg:p-10 overflow-y-auto">
+        <div class="max-w-5xl w-full space-y-6 pb-12">
+
+            <!-- Patient Identity Hero -->
+            <div
+                class="bg-white rounded-[2rem] p-8 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="flex items-center gap-6">
+                    <div
+                        class="w-20 h-20 rounded-[1.5rem] bg-blue-50 flex items-center justify-center text-3xl font-extrabold text-primary">
+                        MS</div>
+                    <div>
+                        <h1
+                            class="font-headline text-3xl md:text-4xl font-extrabold text-[#1c2a59] tracking-tight mb-1.5">
+                            Maria Santos</h1>
+                        <div class="flex flex-wrap items-center gap-3 text-sm font-semibold text-slate-500">
+                            <span class="inline-flex items-center gap-1.5"><span
+                                    class="material-symbols-outlined text-[18px]">badge</span> 2021-8831</span>
+                            <span class="w-1.5 h-1.5 bg-slate-300 rounded-full hidden sm:block"></span>
+                            <span class="inline-flex items-center gap-1.5"><span
+                                    class="material-symbols-outlined text-[18px]">water_drop</span> Blood Type:
+                                O+</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="status-container" class="flex items-center gap-3">
+                    <span id="record-status-badge"
+                        class="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-blue-50 text-primary border border-blue-100 whitespace-nowrap">Active
+                        Session</span>
+                    <!-- Append Mode Toggle for Active/Completed Records -->
+                    <button id="append-record-btn" onclick="enableAmendmentMode()"
+                        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-blue-50 text-primary border border-blue-100 hover:bg-blue-100 transition-colors active:scale-95 shadow-sm shadow-blue-900/10">
+                        <span class="material-symbols-outlined text-[14px]">add_notes</span>
+                        Append Information
+                    </button>
+
+                    <button id="end-session-btn" onclick="showModal('confirmEndModal')"
+                        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 transition-colors active:scale-95 shadow-sm shadow-red-900/10">
+                        <span class="material-symbols-outlined text-[14px]">logout</span>
+                        End Visit
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Visit Information -->
+                <div
+                    class="bg-white rounded-[2rem] p-8 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-7">
+                    <div>
+                        <h2 class="font-headline text-xl font-extrabold text-[#1c2a59] mb-5 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-blue-500"
+                                data-icon="clinical_notes">clinical_notes</span>
+                            Visit Information
+                        </h2>
+                        <div class="space-y-5">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Purpose
+                                    of Visit</label>
+                                <div
+                                    class="w-full bg-slate-50 border border-slate-100 rounded-[1rem] p-5 text-sm font-semibold text-slate-700">
+                                    Medical Consultation</div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Chief
+                                    Complaint</label>
+                                <div class="relative group">
+                                    <div id="chief-complaint" data-original="Fever / Chills and Body Aches for 2 days."
+                                        class="w-full bg-slate-50 border border-slate-100 rounded-[1rem] p-5 text-sm font-semibold text-slate-700 transition-all">
+                                        Fever / Chills and Body Aches for 2 days.</div>
+                                    <div class="original-value-tooltip">Original: Fever / Chills and Body Aches for 2 days.</div>
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Handled
+                                    By (Staff)</label>
+                                <div class="relative">
+                                    <select id="staff-handled-select" disabled
+                                        class="w-full bg-slate-50 border border-slate-100 rounded-[1rem] p-5 text-sm font-bold text-slate-700 appearance-none bg-none cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
+                                        <option>Dr. Dizon</option>
+                                        <option>Dr. Sarapuddin</option>
+                                        <option>N. Mortil</option>
+                                        <option>N. Peña</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patient Information -->
+                <div
+                    class="bg-white rounded-[2rem] p-8 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-7">
+                    <div>
+                        <h2 class="font-headline text-xl font-extrabold text-[#1c2a59] mb-5 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-blue-500" data-icon="person">person</span>
+                            Patient Information
+                        </h2>
+                        <div class="space-y-5">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Course
+                                    / Department</label>
+                                <div
+                                    class="w-full bg-slate-50 border border-slate-100 rounded-[1rem] p-5 text-sm font-semibold text-slate-700">
+                                    BS Nursing</div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Year
+                                    Level</label>
+                                <div
+                                    class="w-full bg-slate-50 border border-slate-100 rounded-[1rem] p-5 text-sm font-semibold text-slate-700">
+                                    3rd Year</div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Time
+                                    of Arrival</label>
+                                <div
+                                    class="w-full bg-slate-50 border border-slate-100 rounded-[1rem] p-5 text-sm font-semibold text-slate-700 flex justify-between items-center">
+                                    10:45 AM
+                                    <span class="material-symbols-outlined text-slate-400 text-[18px]">schedule</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Vitals Card -->
+            <div
+                class="bg-white rounded-[2rem] p-8 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-7">
+                <h2 class="font-headline text-xl font-extrabold text-[#1c2a59] flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div
+                            class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+                            <span class="material-symbols-outlined text-[18px]">monitor_heart</span>
+                        </div>
+                        Clinical Vitals
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Optional</span>
+                </h2>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                    <!-- Blood Pressure -->
+                    <div class="bg-slate-50/50 p-4 rounded-[1rem] border border-slate-100">
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><span
+                                class="material-symbols-outlined text-[14px]">favorite</span> BP</label>
+                        <div class="flex items-end gap-2 text-slate-400 font-bold text-[10px]">
+                            <input type="text" value="120/80" placeholder="120/80" id="vital-bp" readonly
+                                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-extrabold text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all readonly:bg-slate-50 readonly:cursor-not-allowed">
+                            mbHg
+                        </div>
+                    </div>
+
+                    <!-- Temperature -->
+                    <div class="bg-slate-50/50 p-4 rounded-[1rem] border border-slate-100">
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><span
+                                class="material-symbols-outlined text-[14px]">device_thermostat</span> Temp</label>
+                        <div class="flex items-end gap-2 text-slate-400 font-bold text-[10px] relative group">
+                            <input type="number" step="0.1" id="vital-temp" data-original="38.5" value="38.5" placeholder="36.5" readonly
+                                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-extrabold text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all readonly:bg-slate-50 readonly:cursor-not-allowed">
+                            °C
+                            <div class="original-value-tooltip">Original: 38.5°C</div>
+                        </div>
+                    </div>
+
+                    <!-- Heart Rate -->
+                    <div class="bg-slate-50/50 p-4 rounded-[1rem] border border-slate-100">
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><span
+                                class="material-symbols-outlined text-[14px]">ecg</span> Heart</label>
+                        <div class="flex items-end gap-2 text-slate-400 font-bold text-[10px]">
+                            <input type="number" value="88" placeholder="80" id="vital-heart" readonly
+                                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-extrabold text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all readonly:bg-slate-50 readonly:cursor-not-allowed">
+                            BPM
+                        </div>
+                    </div>
+
+                    <!-- Oxygen -->
+                    <div class="bg-slate-50/50 p-4 rounded-[1rem] border border-slate-100">
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><span
+                                class="material-symbols-outlined text-[14px]">air</span> SpO2</label>
+                        <div class="flex items-end gap-2 text-slate-400 font-bold text-[10px]">
+                            <input type="number" value="98" placeholder="98" id="vital-spo2" readonly
+                                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-extrabold text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all readonly:bg-slate-50 readonly:cursor-not-allowed">
+                            %
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory & Dispensing -->
+            <div
+                class="bg-white rounded-[2rem] p-8 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-7">
+                <h2 class="font-headline text-xl font-extrabold text-[#1c2a59] flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-500" data-icon="inventory_2">inventory_2</span>
+                    Inventory & Dispensing
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="md:col-span-1">
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Type</label>
+                        <div class="relative">
+                            <select id="item-type-select" disabled
+                                class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none bg-none disabled:opacity-70 disabled:cursor-not-allowed">
+                                <option value="medicine">Medicine</option>
+                                <option value="equipment">Borrowed Item</option>
+                            </select>
+                            <span
+                                class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 relative">
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Medicine / Item Name</label>
+                        <input type="text" id="item-name-input" list="inventory-items" value="Paracetamol 500mg" placeholder="e.g. Paracetamol / Thermometer" readonly
+                            class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-[1rem] text-[13px] font-bold text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all readonly:opacity-80">
+                        <datalist id="inventory-items"></datalist>
+                        <div id="stock-info" class="absolute -bottom-5 left-1 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest transition-all opacity-0">
+                            <span class="material-symbols-outlined text-[12px]">inventory</span>
+                            <span id="stock-text">Available: 0</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Quantity</label>
+                        <input type="number" value="2" placeholder="0" id="item-quantity" readonly
+                            class="w-full bg-slate-50 border border-slate-200 rounded-[1rem] p-5 text-[13px] font-bold text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all readonly:opacity-80">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Record -->
+            <div
+                class="bg-white rounded-[2rem] p-8 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-7">
+                <h2 class="font-headline text-xl font-extrabold text-[#1c2a59] flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-500"
+                        data-icon="health_and_safety">health_and_safety</span>
+                    Medical Record
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="relative group">
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Symptoms</label>
+                        <textarea id="clinical-symptoms" data-original="High-grade fever (38.5°C), persistent dry cough, and generalized body malaise for 48 hours." readonly
+                            class="w-full bg-slate-50 border border-slate-200 rounded-[1rem] p-5 text-[13px] font-medium text-slate-700 min-h-[140px] resize-none focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-400/70 readonly:opacity-80"
+                            placeholder="Enter observed symptoms...">High-grade fever (38.5°C), persistent dry cough, and generalized body malaise for 48 hours.</textarea>
+                        <div class="original-value-tooltip">Original: High-grade fever (38.5°C), persistent dry cough, and generalized body malaise for 48 hours.</div>
+                    </div>
+                    <div class="relative group">
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Diagnosis</label>
+                        <textarea id="clinical-diagnosis" data-original="Upper Respiratory Tract Infection (URTI) with suspected viral etiology." readonly
+                            class="w-full bg-slate-50 border border-slate-200 rounded-[1rem] p-5 text-[13px] font-medium text-slate-700 min-h-[140px] resize-none focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-400/70 readonly:opacity-80"
+                            placeholder="Enter clinical diagnosis...">Upper Respiratory Tract Infection (URTI) with suspected viral etiology.</textarea>
+                        <div class="original-value-tooltip">Original: Upper Respiratory Tract Infection (URTI) with suspected viral etiology.</div>
+                    </div>
+                    <div class="relative group">
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Management
+                            (Treatment)</label>
+                        <textarea id="management-note" data-original="Advised rest, increased fluid intake, and paracetamol for fever." readonly
+                            class="w-full bg-slate-50 border border-slate-200 rounded-[1rem] p-5 text-[13px] font-medium text-slate-700 min-h-[140px] resize-none focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-400/70 readonly:opacity-80"
+                            placeholder="Prescribed medications or actions...">Advised rest, increased fluid intake, and paracetamol for fever.</textarea>
+                        <div class="original-value-tooltip">Original: Advised rest, increased fluid intake, and paracetamol for fever.</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Referral (Optional)</label>
+                        <div class="relative">
+                            <select id="referral-select" disabled
+                                class="w-full bg-slate-50 border border-slate-200 rounded-[1rem] p-5 text-[13px] font-bold text-slate-700 appearance-none bg-none focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-70 disabled:cursor-not-allowed">
+                                <option value="none">None (No Referral)</option>
+                                <option value="home">Advised to Go Home</option>
+                                <option value="barangay">Barangay Health Center</option>
+                                <option value="public_hospital">Public Hospital (Pasig General, etc.)</option>
+                                <option value="private_hospital">Private Hospital</option>
+                                <option value="specialist">Specialist Referral</option>
+                            </select>
+                            <span class="absolute right-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Remarks</label>
+                        <textarea id="remarks-note" readonly
+                            class="w-full bg-slate-50 border border-slate-200 rounded-[1rem] p-5 text-[13px] font-medium text-slate-700 min-h-[80px] resize-none focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-400/70 readonly:opacity-80"
+                            placeholder="General remarks... e.g. for follow up after 3 days."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div id="amendment-reason-section" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div class="bg-amber-50/50 border border-amber-200 rounded-[2rem] p-8 space-y-4">
+                    <div class="flex items-center gap-3 text-amber-700">
+                        <span class="material-symbols-outlined">edit_attributes</span>
+                        <h3 class="font-headline text-lg font-extrabold">Amendment Reason</h3>
+                    </div>
+                    <textarea id="amendment-reason" placeholder="Please specify why this record is being modified after completion..."
+                        class="w-full bg-white border border-amber-200 rounded-2xl p-5 text-sm font-bold text-slate-800 focus:ring-1 focus:ring-amber-500 outline-none transition-all min-h-[100px] resize-none"></textarea>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 justify-start pt-6">
+                <button
+                    id="save-record-btn"
+                    onclick="showModal('confirmRecordModal')"
+                    class="w-full sm:w-auto px-10 py-4 bg-[#00478d] hover:bg-[#003d7c] text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-900/20 active:scale-[0.98] flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="save">save</span>
+                    Update Record
+                </button>
+                <button
+                    id="save-amendment-btn"
+                    onclick="saveAmendment()"
+                    class="hidden w-full sm:w-auto px-10 py-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-2xl transition-all shadow-xl shadow-amber-900/20 active:scale-[0.98] flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]">verified</span>
+                    Save Amendment
+                </button>
+                <button
+                    onclick="window.location.href='screen8-staff-visit-history.html'"
+                    class="w-full sm:w-auto px-8 py-4 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98] flex items-center justify-center gap-2 border border-slate-200">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="history">history</span>
+                    View History
+                </button>
+                <button onclick="window.location.href='screen5-staff-dashboard.html'"
+                    class="w-full sm:w-auto px-8 py-4 bg-transparent hover:bg-slate-50 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98] sm:ml-auto flex items-center justify-center gap-2 border border-transparent hover:border-slate-200">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="arrow_back">arrow_back</span>
+                    Back to Dashboard
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-red-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-6 border border-red-100">
+                    <span class="material-symbols-outlined text-3xl">logout</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Confirm Logout</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">Are you sure you want to log out? Any unsaved changes may be lost.</p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('logoutModal')" class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button onclick="window.location.href='screen1-landing.html'" class="flex-1 px-6 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-red-900/20 active:scale-[0.98]">Log Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Success Modal -->
+    <!-- Success Modal Removed in favor of Toast -->
+
+    <!-- Confirm End Visit Modal -->
+    <div id="confirmEndModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-amber-100">
+                    <span class="material-symbols-outlined text-3xl">timer_off</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">End Patient Visit?</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">This will finalize the clinical session and log the visit time. Ensure all clinical notes are updated before ending.</p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('confirmEndModal')" class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button onclick="hideModal('confirmEndModal'); showToast('Patient visit session completed'); setTimeout(() => window.location.href='screen5-staff-dashboard.html', 1500);" class="flex-1 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-amber-900/20 active:scale-[0.98]">End Session</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- End Success Modal Removed in favor of Toast -->
+
+    <!-- Detailed Confirmation Modal (HCI Optimized Redesign) -->
+    <div id="confirmRecordModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-[#f8fafc] rounded-[2.5rem] w-full max-w-2xl p-0 shadow-2xl border border-outline-variant/10 relative overflow-hidden flex flex-col max-h-[95vh]">
+            
+            <!-- Header (HCI Status Visibility) -->
+            <div class="px-8 py-6 bg-white border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary/5 text-primary rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[20px]">verified_user</span>
+                    </div>
+                    <div>
+                        <h3 class="font-headline text-lg font-extrabold text-[#1c2a59] leading-none mb-1">Confirmation Required</h3>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Reviewing Clinical Entry</p>
+                    </div>
+                </div>
+                <button onclick="hideModal('confirmRecordModal')" class="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Body (Gestalt-based Grouping) -->
+            <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+                
+                <!-- Hero Badge: Patient Profile -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5">
+                    <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl font-black text-primary shrink-0">MS</div>
+                    <div>
+                        <p class="text-[10px] font-black text-primary uppercase tracking-widest mb-0.5">Patient Identity</p>
+                        <h4 class="text-2xl font-black text-[#1c2a59] leading-tight">Maria Santos</h4>
+                        <p class="text-xs font-bold text-slate-400">IT Department | 3rd Year Student</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Card: Visit Details -->
+                    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-4">
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <span class="material-symbols-outlined text-[18px]">event_available</span>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Visit Logistics</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Consultation Type</p>
+                                <p class="text-sm font-extrabold text-slate-700">Medical Consultation</p>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase">Time In</p>
+                                    <p class="text-xs font-black text-slate-800 uppercase">10:45 AM</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase">Time Out</p>
+                                    <p class="text-xs font-black text-slate-800 uppercase">12:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card: Vital Verification (High Saliency) -->
+                    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-4">
+                        <div class="flex items-center gap-2 text-primary">
+                            <span class="material-symbols-outlined text-[18px]">monitoring</span>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Vitals Snapshot</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-3 bg-blue-50/50 rounded-2xl border border-blue-100/50">
+                                <p class="text-[9px] font-bold text-blue-400 uppercase">Temp</p>
+                                <p class="font-black text-primary text-base leading-none mt-1">38°C</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                                <p class="text-[9px] font-bold text-slate-400 uppercase">BP</p>
+                                <p class="font-black text-slate-700 text-base leading-none mt-1">110/90</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                                <p class="text-[9px] font-bold text-slate-400 uppercase">Heart Rate</p>
+                                <p class="font-black text-slate-700 text-base leading-none mt-1">98bpm</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                                <p class="text-[9px] font-bold text-slate-400 uppercase">SpO2</p>
+                                <p class="font-black text-slate-700 text-base leading-none mt-1">90%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Medical Synthesis -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-5">
+                    <div class="flex items-center gap-2 text-slate-400">
+                        <span class="material-symbols-outlined text-[18px]">clinical_notes</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest">Clinical Synthesis</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="relative pl-6 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:bg-blue-400 before:rounded-full">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Diagnosis Summary</p>
+                            <p class="text-sm font-extrabold text-slate-700 leading-snug">Temperature Measurement & Acute Fever Assessment</p>
+                        </div>
+                        <div class="relative pl-6 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:bg-slate-300 before:rounded-full">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Symptoms Reported</p>
+                            <p class="text-sm font-semibold text-slate-600 italic">"Fatigue, Chills, and Fever at 38°C"</p>
+                        </div>
+                        <div class="relative pl-6 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:bg-slate-300 before:rounded-full">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Management Plan</p>
+                            <p class="text-sm font-medium text-slate-600">Advised rest, increased fluid intake, and paracetamol for symptomatic relief.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Logistics & Inventory -->
+                <div class="bg-indigo-900/5 p-6 rounded-3xl border border-indigo-100 space-y-4">
+                    <div class="flex items-center gap-2 text-indigo-600">
+                        <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest">Post-Visit Inventory</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-black text-indigo-950 uppercase">Paracetamol 500mg</p>
+                            <p class="text-xs font-bold text-indigo-500/70 uppercase">Dispensed Item</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-black text-indigo-900">02</p>
+                            <p class="text-[9px] font-black text-indigo-400 uppercase tracking-tighter">Units</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer (F-Pattern Action Target) -->
+            <div class="px-8 py-7 bg-white border-t border-slate-100 flex flex-col items-center">
+                <p class="text-sm font-bold text-slate-700 mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[18px]">help</span>
+                    Is all information accurate for this session?
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('confirmRecordModal')" class="flex-1 px-8 py-4 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">
+                        Return to Edit
+                    </button>
+                    <button onclick="hideModal('confirmRecordModal'); setTimeout(() => showToast('Clinical record synchronized successfully'), 400);" class="flex-2 sm:w-[60%] px-10 py-4 bg-primary hover:bg-[#003d7c] text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-900/20 active:scale-[0.98] flex items-center justify-center gap-2 tracking-wide">
+                        Yes, Sync Record
+                        <span class="material-symbols-outlined text-[18px]">cloud_sync</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-8 right-8 z-[2000] flex flex-col gap-3 pointer-events-none"></div>
+
+    <script>
+        // Amendment Logic
+        function enableAmendmentMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isCompleted = urlParams.get('status') === 'completed';
+
+            // Change status badge
+            const badge = document.getElementById('record-status-badge');
+            if (isCompleted) {
+                badge.innerText = 'Amending Record';
+                badge.className = 'inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-50 text-amber-600 border border-amber-200 whitespace-nowrap';
+            } else {
+                badge.innerText = 'Appending Record';
+                badge.className = 'inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-blue-50 text-primary border border-blue-100 whitespace-nowrap';
+            }
+            
+            // Hide append button
+            document.getElementById('append-record-btn').classList.add('hidden');
+            
+            // Show save amendment button if completed, or just regular save if active
+            if (isCompleted) {
+                document.getElementById('save-amendment-btn').classList.remove('hidden');
+                document.getElementById('amendment-reason-section').classList.remove('hidden');
+            } else {
+                document.getElementById('save-record-btn').classList.remove('hidden');
+            }
+
+            // Fields to make editable and watch for changes
+            let editableFields = [
+                { id: 'management-note', type: 'textarea' },
+                { id: 'clinical-symptoms', type: 'textarea' },
+                { id: 'clinical-diagnosis', type: 'textarea' },
+                { id: 'remarks-note', type: 'textarea' },
+                { id: 'item-name-input', type: 'input' },
+                { id: 'item-quantity', type: 'input' },
+                { id: 'item-type-select', type: 'select' },
+                { id: 'referral-select', type: 'select' }
+            ];
+
+            // Vitals and visit info are only editable during amendment, not when appending to active record
+            if (isCompleted) {
+                editableFields = editableFields.concat([
+                    { id: 'chief-complaint', type: 'div' },
+                    { id: 'staff-handled-select', type: 'select' },
+                    { id: 'vital-bp', type: 'input' },
+                    { id: 'vital-temp', type: 'input' },
+                    { id: 'vital-heart', type: 'input' },
+                    { id: 'vital-spo2', type: 'input' }
+                ]);
+            }
+
+            editableFields.forEach(field => {
+                const el = document.getElementById(field.id);
+                if (!el) return;
+
+                if (field.type === 'div') {
+                    el.contentEditable = "true";
+                } else if (field.type === 'select') {
+                    el.disabled = false;
+                } else {
+                    el.readOnly = false;
+                }
+
+                el.classList.add('bg-white', 'border-amber-200', 'ring-1', 'ring-amber-500');
+
+                const checkChange = function() {
+                    let currentVal = field.type === 'div' ? el.innerText.trim() : el.value.trim();
+                    const originalVal = el.getAttribute('data-original').trim();
+                    
+                    if (currentVal !== originalVal) {
+                        if (!el.parentElement.querySelector('.modified-indicator')) {
+                            el.classList.add('field-modified');
+                            const indicator = document.createElement('span');
+                            indicator.className = 'modified-indicator';
+                            indicator.innerText = 'Modified';
+                            el.parentElement.appendChild(indicator);
+                        }
+                    } else {
+                        el.classList.remove('field-modified');
+                        const ind = el.parentElement.querySelector('.modified-indicator');
+                        if (ind) ind.remove();
+                    }
+                };
+
+                el.addEventListener('input', checkChange);
+            });
+
+            if (isCompleted) {
+                document.getElementById('chief-complaint').focus();
+                showToast('Amendment Mode Enabled', 'success');
+            } else {
+                document.getElementById('clinical-symptoms').focus();
+                showToast('Append Mode Enabled', 'success');
+            }
+        }
+
+        function saveAmendment() {
+            const reason = document.getElementById('amendment-reason').value;
+            if (!reason) {
+                showToast('Please provide a reason for amendment', 'error');
+                document.getElementById('amendment-reason').focus();
+                return;
+            }
+
+            showToast('Record amendment saved successfully');
+            setTimeout(() => {
+                window.location.search = '?status=completed'; // Reset to "Completed" view in this mockup
+            }, 1500);
+        }
+
+        // Mocking the "Completed" state for demonstration if URL has ?status=completed
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'completed') {
+                const badge = document.getElementById('record-status-badge');
+                badge.innerText = 'Completed';
+                badge.classList.remove('bg-blue-50', 'text-primary', 'border-blue-100');
+                badge.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-100');
+
+                document.getElementById('save-record-btn').classList.add('hidden');
+                document.getElementById('append-record-btn').classList.remove('hidden');
+                document.getElementById('end-session-btn').classList.add('hidden');
+            } else {
+                // Active session - still hide save button until 'Append' is clicked
+                document.getElementById('save-record-btn').classList.add('hidden');
+                document.getElementById('append-record-btn').classList.remove('hidden');
+            }
+        };
+
+        function markAsModified() {
+            const header = document.querySelector('h1') || document.querySelector('h2');
+            if (header && !document.getElementById('modified-badge')) {
+                const badge = document.createElement('span');
+                badge.id = 'modified-badge';
+                badge.className = 'ml-3 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 rounded-lg';
+                badge.textContent = 'Modified';
+                header.appendChild(badge);
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-item pointer-events-auto flex items-center gap-4 bg-white border border-slate-100 p-4 pr-6 rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all duration-300`;
+            
+            const icon = type === 'success' ? 'check_circle' : 'error';
+            const iconColor = type === 'success' ? 'text-emerald-500' : 'text-red-500';
+            const bgColor = type === 'success' ? 'bg-emerald-50' : 'bg-red-50';
+
+            toast.innerHTML = `
+                <div class="w-12 h-12 ${bgColor} ${iconColor} rounded-2xl flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl">${icon}</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Notification</p>
+                    <p class="text-sm font-bold text-slate-700 leading-tight">${message}</p>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function showModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        // Close on backdrop click
+        [ 'logoutModal', 'confirmEndModal', 'confirmRecordModal' ].forEach(id => {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) hideModal(id);
+                });
+            }
+        });
+
+        // Inventory Autofill Logic
+        const itemTypeSelect = document.getElementById('item-type-select');
+        const itemNameInput = document.getElementById('item-name-input');
+        const inventoryDatalist = document.getElementById('inventory-items');
+
+        const inventoryData = {
+            medicine: [
+                { name: "Paracetamol 500mg", stock: 150 },
+                { name: "Ibuprofen 200mg", stock: 12 },
+                { name: "Amoxicillin 500mg", stock: 50 },
+                { name: "Cetirizine 10mg", stock: 25 },
+                { name: "Mefenamic Acid 500mg", stock: 40 }
+            ],
+            equipment: [
+                { name: "Infrared Thermometer", stock: 8 },
+                { name: "Heating Pad (Electric)", stock: 2 },
+                { name: "Nebulizer Kit", stock: 5 },
+                { name: "Pulse Oximeter", stock: 3 },
+                { name: "Blood Pressure Monitor", stock: 4 }
+            ]
+        };
+
+        function updateInventorySuggestions() {
+            const type = itemTypeSelect.value;
+            const items = inventoryData[type] || [];
+            inventoryDatalist.innerHTML = '';
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.name;
+                option.label = `${item.stock} available`;
+                inventoryDatalist.appendChild(option);
+            });
+            // Clear stock info if switching type to avoid confusion
+            document.getElementById('stock-info').style.opacity = '0';
+        }
+
+        itemNameInput.addEventListener('input', function() {
+            const type = itemTypeSelect.value;
+            const value = this.value;
+            const stockInfo = document.getElementById('stock-info');
+            const stockText = document.getElementById('stock-text');
+            const item = inventoryData[type].find(i => i.name === value);
+            
+            if (item) {
+                stockText.textContent = `Available: ${item.stock}`;
+                stockInfo.style.opacity = '1';
+                if (item.stock < 10) {
+                    stockInfo.className = "absolute -bottom-5 left-1 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest transition-all text-amber-600";
+                } else {
+                    stockInfo.className = "absolute -bottom-5 left-1 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest transition-all text-emerald-600";
+                }
+            } else {
+                stockInfo.style.opacity = '0';
+            }
+        });
+
+        itemTypeSelect.addEventListener('change', () => {
+            updateInventorySuggestions();
+            itemNameInput.value = ''; // Clear only on manual change
+        });
+        
+        // Initialize on load
+        updateInventorySuggestions();
+    </script>
+</body>
+
+</html>

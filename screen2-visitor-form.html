@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PLP ClinicConnect - School Clinic Visit Form</title>
+    <!-- Fonts: Manrope for headlines, Inter for body/labels -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#005db6",
+                        "on-primary-fixed-variant": "#00468c",
+                        "surface-variant": "#e1e3e4",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#d6e3ff",
+                        "inverse-primary": "#a9c7ff",
+                        "tertiary-container": "#9f4300",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "secondary-container": "#cbe7f5",
+                        "tertiary-fixed": "#ffdbcb",
+                        "tertiary": "#793100",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary-fixed-variant": "#793100",
+                        "on-surface": "#191c1d",
+                        "primary": "#00478d",
+                        "secondary-fixed-dim": "#afcbd8",
+                        "on-primary-fixed": "#001b3d",
+                        "on-secondary-container": "#4e6874",
+                        "on-tertiary-fixed": "#341100",
+                        "primary-fixed-dim": "#a9c7ff",
+                        "on-surface-variant": "#424752",
+                        "on-tertiary-container": "#ffcfb9",
+                        "secondary-fixed": "#cbe7f5",
+                        "surface-container-low": "#f3f4f5",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#005eb8",
+                        "background": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "outline": "#727783",
+                        "on-secondary-fixed-variant": "#304a55",
+                        "on-primary-container": "#c8daff",
+                        "surface": "#f8f9fa",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary-fixed": "#021f29",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#edeeef",
+                        "outline-variant": "#c2c6d4",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary": "#48626e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .cloud-shadow {
+            box-shadow: 0px 20px 40px rgba(25, 28, 29, 0.06);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 71, 141, 0.15);
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface h-screen flex flex-col overflow-hidden">
+    <!-- Console Header -->
+    <header
+        class="w-full px-8 py-2 shrink-0 flex justify-between items-center bg-white/5 border-b border-outline-variant/5">
+        <div class="flex items-center gap-3">
+            <button onclick="window.history.back()"
+                class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl" data-icon="arrow_back">arrow_back</span>
+            </button>
+            <div class="w-px h-4 bg-slate-200"></div>
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 bg-primary rounded-lg flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-white text-[18px]"
+                        data-icon="clinical_notes">clinical_notes</span>
+                </div>
+                <span class="font-headline font-black text-xs tracking-[0.2em] text-primary uppercase">PLPClinic</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="max-w-4xl w-full">
+
+            <!-- Unified Console Card -->
+            <div
+                class="bg-white rounded-[3rem] cloud-shadow border border-outline-variant/10 w-full relative overflow-hidden flex flex-col items-center">
+                <!-- Branding Header -->
+                <div class="w-full px-12 pt-6 pb-4 border-b border-outline-variant/5 text-center relative">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/5 rounded-full blur-3xl">
+                    </div>
+                    <div class="relative">
+                        <div
+                            class="inline-flex items-center justify-center w-8 h-8 bg-primary-container/20 text-primary rounded-xl mb-1 border border-primary/10">
+                            <span class="material-symbols-outlined text-lg" data-icon="edit_note">edit_note</span>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-end md:justify-center gap-1 md:gap-3">
+                            <h1
+                                class="font-headline font-extrabold text-2xl md:text-3xl tracking-tighter text-blue-950">
+                                Clinic Visit Log Form
+                            </h1>
+                        </div>
+                        <p class="text-slate-500 font-medium text-xs md:text-sm tracking-tight opacity-70 mt-1">
+                            Please provide your details for clinic assessment
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Form Section - High Visibility -->
+                <div class="w-full px-12 py-2">
+                    <form class="space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-2">
+                            <!-- Full Name -->
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Full
+                                    Name</label>
+                                <div class="relative group">
+                                    <span
+                                        class="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 group-focus-within:text-primary transition-colors text-xl"
+                                        data-icon="person_outline">person_outline</span>
+                                    <input type="text" placeholder="e.g. Juan dela Cruz"
+                                        class="w-full pl-8 pr-0 py-2 bg-transparent border-b-2 border-slate-100 focus:border-primary transition-all text-sm font-bold placeholder:text-slate-200 placeholder:font-medium">
+                                </div>
+                            </div>
+
+                            <!-- ID Number -->
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Student
+                                    / Staff ID</label>
+                                <div class="relative group">
+                                    <span
+                                        class="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 group-focus-within:text-primary transition-colors text-xl"
+                                        data-icon="badge">badge</span>
+                                    <input type="text" placeholder="e.g. 2024-00123"
+                                        class="w-full pl-8 pr-0 py-2 bg-transparent border-b-2 border-slate-100 focus:border-primary transition-all text-sm font-bold placeholder:text-slate-200 placeholder:font-medium">
+                                </div>
+                            </div>
+
+                            <!-- Category -->
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Category</label>
+                                <div class="relative group">
+                                    <span
+                                        class="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 group-focus-within:text-primary transition-colors text-xl"
+                                        data-icon="group">group</span>
+                                    <select id="role-category"
+                                        class="w-full pl-8 pr-8 py-2 bg-none bg-transparent border-b-2 border-slate-100 focus:border-primary transition-all text-sm font-bold appearance-none cursor-pointer">
+                                        <option value="">Select Category</option>
+                                        <option>Student</option>
+                                        <option>Staff</option>
+                                        <option>Faculty</option>
+                                        <option>Guest</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 pointer-events-none text-lg"
+                                        data-icon="expand_more">expand_more</span>
+                                </div>
+                            </div>
+
+                            <!-- Year Level -->
+                            <div id="year-level-container" class="space-y-2 hidden">
+                                <label
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Year Level</label>
+                                <div class="relative group">
+                                    <span
+                                        class="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 group-focus-within:text-primary transition-colors text-xl"
+                                        data-icon="grade">grade</span>
+                                    <select
+                                        class="w-full pl-8 pr-8 py-2 bg-none bg-transparent border-b-2 border-slate-100 focus:border-primary transition-all text-sm font-bold appearance-none cursor-pointer">
+                                        <option value="">Select Year</option>
+                                        <option>1st Year</option>
+                                        <option>2nd Year</option>
+                                        <option>3rd Year</option>
+                                        <option>4th Year</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 pointer-events-none text-lg"
+                                        data-icon="expand_more">expand_more</span>
+                                </div>
+                            </div>
+
+                            <!-- Course / Department -->
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Course
+                                    / Department</label>
+                                <div class="relative group">
+                                    <span
+                                        class="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 group-focus-within:text-primary transition-colors text-xl"
+                                        data-icon="school">school</span>
+                                    <select
+                                        class="w-full pl-8 pr-8 py-2 bg-none bg-transparent border-b-2 border-slate-100 focus:border-primary transition-all text-sm font-bold appearance-none cursor-pointer">
+                                        <option value="">Select Dept/Course</option>
+                                        <option>College of Computer Studies</option>
+                                        <option>College of Nursing</option>
+                                        <option>Arts & Sciences</option>
+                                        <option>Administrative Office</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 pointer-events-none text-lg"
+                                        data-icon="expand_more">expand_more</span>
+                                </div>
+                            </div>
+
+                            <!-- Reason for Visit -->
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Reason</label>
+                                <div class="relative group">
+                                    <span
+                                        class="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 group-focus-within:text-primary transition-colors text-xl"
+                                        data-icon="medical_information">medical_information</span>
+                                    <select
+                                        class="w-full pl-8 pr-8 py-2 bg-none bg-transparent border-b-2 border-slate-100 focus:border-primary transition-all text-sm font-bold appearance-none cursor-pointer">
+                                        <option value="">Select Reason</option>
+                                        <option>APE</option>
+                                        <option>Health Monitoring</option>
+                                        <option>Pain Management</option>
+                                        <option>Medical Consult</option>
+                                        <option>Dental Consult</option>
+                                        <option>Wound Care</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-300 pointer-events-none text-lg"
+                                        data-icon="expand_more">expand_more</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chief Complaint -->
+                        <div class="space-y-2 md:col-span-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Chief
+                                Complaint</label>
+                            <div class="relative group">
+                                <span
+                                    class="absolute left-2 top-1.5 material-symbols-outlined text-slate-300 group-focus-within:text-primary transition-colors text-xl"
+                                    data-icon="notes">notes</span>
+                                <textarea rows="1"
+                                    placeholder="Briefly describe your symptoms or reason for visiting the clinic today..."
+                                    class="w-full pl-8 pr-0 py-2 bg-transparent border-b-2 border-slate-100 focus:border-primary transition-all text-sm font-bold resize-none placeholder:text-slate-200 placeholder:font-medium"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-px bg-slate-100 my-2 md:col-span-3"></div>
+
+                        <!-- Time Recording Section -->
+                        <div class="space-y-2 md:col-span-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">TIME
+                                RECORDING <span
+                                    class="text-slate-300 normal-case font-medium">(auto-generated)</span></label>
+
+                            <div class="max-w-xs space-y-1">
+                                <label class="text-[10px] font-bold text-slate-500 ml-1">Time In (auto)</label>
+                                <div class="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">
+                                    <span class="text-sm font-bold text-slate-600 block">09:14 AM — set on submit</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Bar -->
+                        <div class="pt-2 flex flex-col sm:flex-row gap-4 md:col-span-3">
+                            <button type="button" onclick="window.location.href='screen3-visitor-confirmation.html'"
+                                class="flex-grow py-3 bg-primary text-white font-bold rounded-xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-xl shadow-primary/20 hover:shadow-primary/30">
+                                <span>Register Clinic Visit</span>
+                                <span class="material-symbols-outlined text-xl"
+                                    data-icon="arrow_right_alt">arrow_right_alt</span>
+                            </button>
+                            <button type="reset"
+                                class="px-8 py-3 bg-slate-50 text-slate-400 font-bold rounded-xl flex items-center justify-center border border-slate-100 active:scale-[0.98] transition-all hover:bg-slate-100">
+                                <span class="material-symbols-outlined text-lg" data-icon="refresh">refresh</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Trust Bar / Integration -->
+                <div
+                    class="w-full bg-slate-50/50 px-12 py-3 border-t border-outline-variant/10 flex flex-wrap justify-between items-center gap-4">
+                    <div class="flex items-center gap-6">
+                        <div
+                            class="flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                            <span class="material-symbols-outlined text-[14px] text-green-500"
+                                data-icon="verified_user">verified_user</span>
+                            Secure Gateway
+                        </div>
+                        <div
+                            class="flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                            <span class="material-symbols-outlined text-[14px] text-blue-500"
+                                data-icon="timer">timer</span>
+                            Auto-Timestamp
+                        </div>
+                    </div>
+                    <p class="text-[8px] font-bold text-slate-300 uppercase tracking-widest flex items-center gap-4">
+                        <span>★ = fields added to match clinic DTR</span>
+                        <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                        <span>Shaded fields are auto-generated, not editable by visitor</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Background Decoration -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+        <div class="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-100/30 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-blue-50/50 rounded-full blur-[80px]"></div>
+    </div>
+
+    <script>
+        const roleCategory = document.getElementById('role-category');
+        const yearLevelContainer = document.getElementById('year-level-container');
+
+        roleCategory.addEventListener('change', (e) => {
+            if (e.target.value === 'Student') {
+                yearLevelContainer.classList.remove('hidden');
+            } else {
+                yearLevelContainer.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

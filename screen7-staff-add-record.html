@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PLP ClinicConnect - Add New Record</title>
+    <!-- Fonts: Manrope for headlines, Inter for body/labels -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00478d",
+                        "primary-fixed": "#d6e3ff",
+                        "primary-container": "#005eb8",
+                        "on-primary": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c2c6d4"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-backdrop.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-backdrop.show .modal-content {
+            transform: scale(1);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+
+        /* Toast Animation */
+        @keyframes toast-in {
+            from { transform: translateX(120%); }
+            to { transform: translateX(0); }
+        }
+        .toast-item {
+            animation: toast-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface h-screen flex flex-col overflow-hidden relative">
+
+    <!-- Top Header -->
+    <header
+        class="w-full px-8 py-4 shrink-0 flex justify-between items-center bg-white border-b border-outline-variant/20 shadow-sm relative z-20">
+        <div class="flex items-center gap-2.5">
+            <div
+                class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-[18px] font-bold"
+                    data-icon="clinical_notes">clinical_notes</span>
+            </div>
+            <span class="font-headline font-extrabold text-base tracking-tight text-[#1c2a59]">PLP Clinic<span
+                    class="text-[#004d9c]">Connect</span></span>
+        </div>
+        <nav class="hidden md:flex items-center gap-6 lg:gap-8">
+            <a href="screen5-staff-dashboard.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Dashboard</a>
+            <a href="screen6-staff-record-detail.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Patient
+                Records</a>
+            <a href="screen10-staff-inventory.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Inventory</a>
+            <a href="screen11-staff-reports.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Reports</a>
+            <a href="screen9-staff-settings.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Settings</a>
+            <div class="w-px h-4 bg-slate-200 mx-1"></div>
+            <a href="javascript:void(0)" onclick="showModal('logoutModal')"
+                class="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-red-600 transition-colors py-1 tracking-wide">
+                Logout
+                <span class="material-symbols-outlined text-[16px]" data-icon="logout">logout</span>
+            </a>
+        </nav>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center bg-surface w-full p-6 lg:p-10 overflow-y-auto custom-scrollbar">
+        <div class="max-w-4xl w-full space-y-8 pb-32">
+
+            <!-- Context Header -->
+            <div>
+                <h1 class="font-headline text-3xl md:text-4xl font-extrabold text-[#1c2a59] tracking-tight">Manual
+                    Walk-in Registration</h1>
+                <p class="text-sm font-medium text-slate-500 mt-2">Initialize a new patient record and record
+                    preliminary vitals.</p>
+            </div>
+
+            <form class="space-y-6">
+
+                <!-- Patient Identity Card -->
+                <div
+                    class="bg-white rounded-[2rem] p-8 sm:p-10 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-8 relative overflow-hidden">
+                    <h2
+                        class="font-headline text-xl font-extrabold text-[#1c2a59] border-b border-outline-variant/10 pb-4 flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-[18px]">person</span>
+                        </div>
+                        Patient Identity
+                    </h2>
+
+                    <div class="space-y-6">
+                        <!-- ID Search Row -->
+                        <div>
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Student
+                                / Staff ID Number</label>
+                            <div class="flex gap-3">
+                                <div class="relative flex-grow">
+                                    <span
+                                        class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400">badge</span>
+                                    <input type="text" placeholder="e.g. 2021-8831"
+                                        class="w-full pl-12 pr-4 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 placeholder:text-slate-400 shadow-sm">
+                                </div>
+                                <button type="button"
+                                    class="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-[1rem] transition-colors active:scale-95 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">search</span> <span
+                                        class="hidden sm:inline">Fetch Profile</span>
+                                </button>
+                            </div>
+                            <p class="text-[11px] font-medium text-slate-400 mt-2 ml-1">Fetching a profile will
+                                auto-fill the fields below.</p>
+                        </div>
+
+                        <!-- Name Row -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">First
+                                    Name</label>
+                                <input type="text"
+                                    class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Last
+                                    Name</label>
+                                <input type="text"
+                                    class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800">
+                            </div>
+                        </div>
+
+                        <!-- Status Row -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Role
+                                    Type</label>
+                                <div class="relative">
+                                    <select id="role-select"
+                                        class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none bg-none">
+                                        <option value="" disabled selected>Select Role...</option>
+                                        <option>Student</option>
+                                        <option>Faculty Staff</option>
+                                        <option>Guest / Visitor</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Course
+                                    / Department</label>
+                                <input type="text" placeholder="e.g. BS Nursing"
+                                    class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 placeholder:text-slate-400">
+                            </div>
+                            <div id="year-level-field" class="hidden">
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Year
+                                    Level</label>
+                                <div class="relative">
+                                    <select
+                                        class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none">
+                                        <option value="" disabled selected>Select Year...</option>
+                                        <option>1st Year</option>
+                                        <option>2nd Year</option>
+                                        <option>3rd Year</option>
+                                        <option>4th Year</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visit Details Card -->
+                <div
+                    class="bg-white rounded-[2rem] p-8 sm:p-10 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-8 relative overflow-hidden">
+                    <h2
+                        class="font-headline text-xl font-extrabold text-[#1c2a59] border-b border-outline-variant/10 pb-4 flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <span class="material-symbols-outlined text-[18px]">clinical_notes</span>
+                        </div>
+                        Visit Details
+                    </h2>
+
+                    <div class="space-y-6">
+
+                        <!-- Data Fields -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Purpose
+                                    of Visit</label>
+                                <div class="relative">
+                                    <select
+                                        class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none">
+                                        <option>APE</option>
+                                        <option>Health Monitoring</option>
+                                        <option>Pain Management</option>
+                                        <option>Medical Consult</option>
+                                        <option>Dental Consult</option>
+                                        <option>Wound Care</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Handled
+                                    By (Staff)</label>
+                                <div class="relative">
+                                    <select
+                                        class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none">
+                                        <option>Dr. Dizon</option>
+                                        <option>Dr. Sarapuddin</option>
+                                        <option>N. Mortil</option>
+                                        <option>N. Peña</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Arrival
+                                    Time</label>
+                                <div class="relative">
+                                    <input type="time" value="10:45"
+                                        class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-[15px] font-bold text-slate-800">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Chief
+                                Complaint</label>
+                            <textarea
+                                class="w-full px-5 py-4 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-semibold text-slate-800 min-h-[100px] resize-none"
+                                placeholder="Briefly describe the symptoms or reason for visiting..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preliminary Vitals Card -->
+                <div
+                    class="bg-white rounded-[2rem] p-8 sm:p-10 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-8 relative overflow-hidden">
+                    <h2
+                        class="font-headline text-xl font-extrabold text-[#1c2a59] border-b border-outline-variant/10 pb-4 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+                                <span class="material-symbols-outlined text-[18px]">monitor_heart</span>
+                            </div>
+                            Clinical Vitals
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Optional</span>
+                    </h2>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                        <!-- Blood Pressure -->
+                        <div class="bg-slate-50/50 p-4 rounded-[1rem] border border-slate-100">
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><span
+                                    class="material-symbols-outlined text-[14px]">favorite</span> BP</label>
+                            <div class="flex items-end gap-2 text-slate-400 font-bold text-[10px]">
+                                <input type="text" placeholder="120/80"
+                                    class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-extrabold text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+                                mbHg
+                            </div>
+                        </div>
+
+                        <!-- Temperature -->
+                        <div class="bg-slate-50/50 p-4 rounded-[1rem] border border-slate-100">
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><span
+                                    class="material-symbols-outlined text-[14px]">device_thermostat</span> Temp</label>
+                            <div class="flex items-end gap-2 text-slate-400 font-bold text-[10px]">
+                                <input type="number" step="0.1" placeholder="36.5"
+                                    class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-extrabold text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+                                °C
+                            </div>
+                        </div>
+
+                        <!-- Heart Rate -->
+                        <div class="bg-slate-50/50 p-4 rounded-[1rem] border border-slate-100">
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><span
+                                    class="material-symbols-outlined text-[14px]">ecg</span> Heart</label>
+                            <div class="flex items-end gap-2 text-slate-400 font-bold text-[10px]">
+                                <input type="number" placeholder="80"
+                                    class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-extrabold text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+                                BPM
+                            </div>
+                        </div>
+
+                        <!-- Oxygen -->
+                        <div class="bg-slate-50/50 p-4 rounded-[1rem] border border-slate-100">
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><span
+                                    class="material-symbols-outlined text-[14px]">air</span> SpO2</label>
+                            <div class="flex items-end gap-2 text-slate-400 font-bold text-[10px]">
+                                <input type="number" placeholder="98"
+                                    class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-extrabold text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+                                %
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory & Dispensing Card -->
+                <div
+                    class="bg-white rounded-[2rem] p-8 sm:p-10 border border-outline-variant/20 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-8 relative overflow-hidden">
+                    <h2
+                        class="font-headline text-xl font-extrabold text-[#1c2a59] border-b border-outline-variant/10 pb-4 flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                        </div>
+                        Inventory & Dispensing
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="md:col-span-1">
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Type</label>
+                            <div class="relative">
+                                <select id="item-type-select"
+                                    class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none bg-none">
+                                    <option value="medicine">Medicine</option>
+                                    <option value="equipment">Borrowed Item</option>
+                                </select>
+                                <span
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 relative">
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Medicine / Item Name</label>
+                            <input type="text" id="item-name-input" list="inventory-items" placeholder="e.g. Paracetamol / Thermometer"
+                                class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800">
+                            <datalist id="inventory-items"></datalist>
+                            <div id="stock-info" class="absolute -bottom-5 left-1 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest transition-all opacity-0">
+                                <span class="material-symbols-outlined text-[12px]">inventory</span>
+                                <span id="stock-text">Available: 0</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Quantity</label>
+                            <input type="number" placeholder="1"
+                                class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Management
+                                (Treatment)</label>
+                            <textarea
+                                class="w-full px-5 py-4 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-semibold text-slate-800 min-h-[100px] resize-none"
+                                placeholder="Prescribed medications or actions..."></textarea>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Referral (Optional)</label>
+                            <div class="relative">
+                                <select
+                                    class="w-full px-5 py-4 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none bg-none">
+                                    <option value="none">None (No Referral)</option>
+                                    <option value="home">Advised to Go Home</option>
+                                    <option value="barangay">Barangay Health Center</option>
+                                    <option value="public_hospital">Public Hospital (Pasig General, etc.)</option>
+                                    <option value="private_hospital">Private Hospital</option>
+                                    <option value="specialist">Specialist Referral</option>
+                                </select>
+                                <span class="absolute right-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Remarks</label>
+                            <textarea
+                                class="w-full px-5 py-4 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-semibold text-slate-800 min-h-[80px] resize-none"
+                                placeholder="General clinical remarks..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 justify-start pt-10">
+                <button
+                    onclick="showToast('New clinical record created successfully'); setTimeout(() => window.location.href='screen6-staff-record-detail.html', 1500);"
+                    class="w-full sm:w-auto px-10 py-4 bg-[#00478d] hover:bg-[#003d7c] text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-900/20 active:scale-[0.98] flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="save">save</span>
+                    Save & Initialize Record
+                </button>
+                <button onclick="window.location.href='screen5-staff-dashboard.html'"
+                    class="w-full sm:w-auto px-8 py-4 bg-transparent hover:bg-slate-50 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98] sm:ml-auto flex items-center justify-center gap-2 border border-transparent hover:border-slate-200">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal-backdrop items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-red-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-6 border border-red-100">
+                    <span class="material-symbols-outlined text-3xl">logout</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Confirm Logout</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">Are you sure you want to log out? Any progress in the registration form may be lost.</p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('logoutModal')" class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button onclick="window.location.href='screen1-landing.html'" class="flex-1 px-6 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-red-900/20 active:scale-[0.98]">Log Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal Removed in favor of Toast -->
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-8 right-8 z-[2000] flex flex-col gap-3 pointer-events-none"></div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-item pointer-events-auto flex items-center gap-4 bg-white border border-slate-100 p-4 pr-6 rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all duration-300`;
+            
+            const icon = type === 'success' ? 'check_circle' : 'error';
+            const iconColor = type === 'success' ? 'text-emerald-500' : 'text-red-500';
+            const bgColor = type === 'success' ? 'bg-emerald-50' : 'bg-red-50';
+
+            toast.innerHTML = `
+                <div class="w-12 h-12 ${bgColor} ${iconColor} rounded-2xl flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl">${icon}</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Notification</p>
+                    <p class="text-sm font-bold text-slate-700 leading-tight">${message}</p>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function showModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        // Close on backdrop click
+        [ 'logoutModal', 'successModal' ].forEach(id => {
+            document.getElementById(id).addEventListener('click', function(e) {
+                if (e.target === this) hideModal(id);
+            });
+        });
+
+        const roleSelect = document.getElementById('role-select');
+        const yearLevelField = document.getElementById('year-level-field');
+
+        roleSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'Student') {
+                yearLevelField.classList.remove('hidden');
+            } else {
+                yearLevelField.classList.add('hidden');
+            }
+        });
+
+        // Inventory Autofill Logic
+        const itemTypeSelect = document.getElementById('item-type-select');
+        const itemNameInput = document.getElementById('item-name-input');
+        const inventoryDatalist = document.getElementById('inventory-items');
+
+        const inventoryData = {
+            medicine: [
+                { name: "Paracetamol 500mg", stock: 150 },
+                { name: "Ibuprofen 200mg", stock: 12 },
+                { name: "Amoxicillin 500mg", stock: 50 },
+                { name: "Cetirizine 10mg", stock: 25 },
+                { name: "Mefenamic Acid 500mg", stock: 40 }
+            ],
+            equipment: [
+                { name: "Infrared Thermometer", stock: 8 },
+                { name: "Heating Pad (Electric)", stock: 2 },
+                { name: "Nebulizer Kit", stock: 5 },
+                { name: "Pulse Oximeter", stock: 3 },
+                { name: "Blood Pressure Monitor", stock: 4 }
+            ]
+        };
+
+        function updateInventorySuggestions() {
+            const type = itemTypeSelect.value;
+            const items = inventoryData[type] || [];
+            inventoryDatalist.innerHTML = '';
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.name;
+                option.label = `${item.stock} available`;
+                inventoryDatalist.appendChild(option);
+            });
+            // Clear input and stock info if switching type to avoid confusion
+            itemNameInput.value = '';
+            document.getElementById('stock-info').style.opacity = '0';
+        }
+
+        itemNameInput.addEventListener('input', function() {
+            const type = itemTypeSelect.value;
+            const value = this.value;
+            const stockInfo = document.getElementById('stock-info');
+            const stockText = document.getElementById('stock-text');
+            const item = inventoryData[type].find(i => i.name === value);
+            
+            if (item) {
+                stockText.textContent = `Available: ${item.stock}`;
+                stockInfo.style.opacity = '1';
+                if (item.stock < 10) {
+                    stockInfo.className = "absolute -bottom-5 left-1 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest transition-all text-amber-600";
+                } else {
+                    stockInfo.className = "absolute -bottom-5 left-1 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest transition-all text-emerald-600";
+                }
+            } else {
+                stockInfo.style.opacity = '0';
+            }
+        });
+
+        itemTypeSelect.addEventListener('change', updateInventorySuggestions);
+        // Initialize on load
+        updateInventorySuggestions();
+    </script>
+</body>
+
+</html>

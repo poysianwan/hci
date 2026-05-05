@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PLP ClinicConnect - Generate Reports</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00478d",
+                        "primary-fixed": "#d6e3ff",
+                        "primary-container": "#005eb8",
+                        "on-primary": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c2c6d4"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-backdrop.show .modal-content {
+            transform: scale(1);
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+        }
+
+        .report-card-active {
+            border-color: #00478d;
+            background-color: #f0f7ff;
+            box-shadow: 0 10px 25px -5px rgba(0, 71, 141, 0.1);
+        }
+
+        /* Toast Animation */
+        @keyframes toast-in {
+            from { transform: translateX(120%); }
+            to { transform: translateX(0); }
+        }
+        .toast-item {
+            animation: toast-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface h-screen flex flex-col overflow-hidden relative">
+    <!-- Top Header -->
+    <header
+        class="w-full px-8 py-4 shrink-0 flex justify-between items-center bg-white border-b border-outline-variant/20 shadow-sm relative z-20">
+        <div class="flex items-center gap-2.5">
+            <div
+                class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-[18px] font-bold">clinical_notes</span>
+            </div>
+            <span class="font-headline font-extrabold text-base tracking-tight text-[#1c2a59]">PLP Clinic<span
+                    class="text-[#004d9c]">Connect</span></span>
+        </div>
+        <nav class="hidden md:flex items-center gap-6 lg:gap-8">
+            <a href="screen5-staff-dashboard.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Dashboard</a>
+            <a href="screen6-staff-record-detail.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Patient
+                Records</a>
+            <a href="screen10-staff-inventory.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Inventory</a>
+            <a href="screen11-staff-reports.html"
+                class="text-xs font-bold text-primary border-b-2 border-primary py-1 tracking-wide">Reports</a>
+            <a href="screen9-staff-settings.html"
+                class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors py-1 tracking-wide">Settings</a>
+            <div class="w-px h-4 bg-slate-200 mx-1"></div>
+            <a href="javascript:void(0)" onclick="showModal('logoutModal')"
+                class="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-red-600 transition-colors py-1 tracking-wide">
+                Logout
+                <span class="material-symbols-outlined text-[16px]">logout</span>
+            </a>
+        </nav>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center bg-surface w-full p-6 lg:p-10 overflow-y-auto custom-scrollbar">
+        <div class="max-w-7xl w-full space-y-8 pb-20">
+            <!-- Header Section -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="font-headline text-3xl font-extrabold text-[#1c2a59] tracking-tight">Reports & Analytics
+                    </h1>
+                    <p class="text-sm font-semibold text-slate-500 mt-1 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        Data is up to date as of today
+                    </p>
+                </div>
+            </div>
+
+            <!-- Statistics Overview (Moved to Top) -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between px-2">
+                    <h2 class="font-headline text-xl font-extrabold text-[#1c2a59]">Statistics Overview</h2>
+                    <p class="text-xs font-bold text-slate-500">Distribution of Patient Visits by Reason</p>
+                </div>
+                
+                <!-- Top Summary Metrics -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
+                    <div class="bg-white rounded-[1.5rem] border border-outline-variant/20 shadow-sm p-5 flex flex-col justify-center">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 text-primary flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-[16px]">groups</span>
+                            </div>
+                            <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Total Visits</span>
+                        </div>
+                        <p class="text-3xl font-extrabold text-[#1c2a59]">450</p>
+                    </div>
+
+                    <div class="bg-white rounded-[1.5rem] border border-outline-variant/20 shadow-sm p-5 flex flex-col justify-center">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-[16px]">monitoring</span>
+                            </div>
+                            <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Avg. Daily</span>
+                        </div>
+                        <p class="text-3xl font-extrabold text-[#1c2a59]">28<span class="text-sm font-bold text-slate-400 ml-1">patients</span></p>
+                    </div>
+
+                    <div class="bg-white rounded-[1.5rem] border border-outline-variant/20 shadow-sm p-5 flex flex-col justify-center">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-[16px]">event_available</span>
+                            </div>
+                            <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Busiest Day</span>
+                        </div>
+                        <p class="text-3xl font-extrabold text-[#1c2a59]">Mon</p>
+                    </div>
+
+                    <div class="bg-white rounded-[1.5rem] border border-outline-variant/20 shadow-sm p-5 flex flex-col justify-center">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-[16px]">medical_services</span>
+                            </div>
+                            <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Top Reason</span>
+                        </div>
+                        <p class="text-3xl font-extrabold text-[#1c2a59]">APE</p>
+                    </div>
+                </div>
+
+                <!-- Breakdown Progress Bars -->
+                <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm p-6 lg:p-8">
+                    <h3 class="font-headline text-lg font-extrabold text-[#1c2a59] mb-6">Visit Reason Breakdown</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                        <!-- Stat Item 1 -->
+                        <div>
+                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-primary"></div> Annual Physical Exam (APE)</span>
+                                <span>202 Visits</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-primary h-2.5 rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <!-- Stat Item 2 -->
+                        <div>
+                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> Medical Consult</span>
+                                <span>113 Visits</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-emerald-500 h-2.5 rounded-full" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        <!-- Stat Item 3 -->
+                        <div>
+                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-indigo-500"></div> Dental Consult</span>
+                                <span>90 Visits</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-indigo-500 h-2.5 rounded-full" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <!-- Stat Item 4 -->
+                        <div>
+                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-amber-500"></div> Wound Care</span>
+                                <span>20 Visits</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-amber-500 h-2.5 rounded-full" style="width: 4.5%"></div>
+                            </div>
+                        </div>
+                        <!-- Stat Item 5 -->
+                        <div>
+                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-rose-500"></div> Health Monitoring</span>
+                                <span>15 Visits</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-rose-500 h-2.5 rounded-full" style="width: 3.5%"></div>
+                            </div>
+                        </div>
+                        <!-- Stat Item 6 -->
+                        <div>
+                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-cyan-500"></div> Pain Management</span>
+                                <span>10 Visits</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-cyan-500 h-2.5 rounded-full" style="width: 2%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unified Report Generator -->
+            <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm overflow-hidden flex flex-col">
+                <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
+                    
+                    <!-- Col 1: Report Type & Format (3 cols) -->
+                    <div class="lg:col-span-3 p-6 space-y-6 bg-slate-50/30">
+                        <div class="space-y-1">
+                            <h2 class="font-headline text-lg font-extrabold text-[#1c2a59]">Report Type</h2>
+                            <p class="text-xs text-slate-400 font-medium">Select data category</p>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <!-- Report Option 1 -->
+                            <button id="report-patient-logs" onclick="selectReport('patient-logs')"
+                                class="w-full text-left p-3 rounded-2xl border-2 border-primary bg-white shadow-sm group transition-all report-card report-card-active">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-[18px]">patient_list</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">Daily Patient Logs</h3>
+                                    </div>
+                                </div>
+                            </button>
+
+                            <!-- Report Option 2 -->
+                            <button id="report-inventory" onclick="selectReport('inventory')"
+                                class="w-full text-left p-3 rounded-2xl border-2 border-transparent hover:bg-white group transition-all report-card">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">Inventory Tracking</h3>
+                                    </div>
+                                </div>
+                            </button>
+
+                            <!-- Report Option 3 -->
+                            <button id="report-archives" onclick="selectReport('archives')"
+                                class="w-full text-left p-3 rounded-2xl border-2 border-transparent hover:bg-white group transition-all report-card">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-[18px]">archive</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">Archived Inventory</h3>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="pt-6 border-t border-slate-200 space-y-4">
+                            <h2 class="font-headline text-sm font-extrabold text-[#1c2a59]">Export Format</h2>
+                            <div class="flex gap-1.5 p-1 bg-slate-200/50 rounded-xl">
+                                <button onclick="selectFormat('pdf')" id="format-pdf"
+                                    class="flex-1 py-2 px-2 rounded-lg bg-white shadow-sm text-[10px] font-black text-primary uppercase tracking-widest transition-all">PDF</button>
+                                <button onclick="selectFormat('excel')" id="format-excel"
+                                    class="flex-1 py-2 px-2 rounded-lg text-[10px] font-black text-slate-500 uppercase tracking-widest hover:bg-white/50 transition-all">Excel</button>
+                                <button onclick="selectFormat('csv')" id="format-csv"
+                                    class="flex-1 py-2 px-2 rounded-lg text-[10px] font-black text-slate-500 uppercase tracking-widest hover:bg-white/50 transition-all">CSV</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Col 2: Parameters (5 cols) -->
+                    <div class="lg:col-span-5 p-6 lg:p-8 space-y-6 flex flex-col justify-between">
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <h2 class="font-headline text-lg font-extrabold text-[#1c2a59]">Report Parameters</h2>
+                                <button class="text-[10px] font-bold text-primary hover:underline uppercase tracking-widest">Reset Filters</button>
+                            </div>
+                            
+                            <!-- Date Configuration -->
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Timeframe</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button class="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 transition-all hover:bg-slate-100">This Month</button>
+                                    <button class="px-3 py-2.5 rounded-xl bg-white border border-slate-100 text-xs font-bold text-slate-500 transition-all hover:border-slate-200">7 Days</button>
+                                    <button class="px-3 py-2.5 rounded-xl bg-white border border-slate-100 text-xs font-bold text-slate-500 transition-all hover:border-slate-200">Custom</button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mt-2">
+                                    <div class="space-y-1.5">
+                                        <p class="text-[10px] font-bold text-slate-500 ml-1">Start Date</p>
+                                        <input type="date" class="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-sm font-semibold text-slate-700">
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <p class="text-[10px] font-bold text-slate-500 ml-1">End Date</p>
+                                        <input type="date" class="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-sm font-semibold text-slate-700">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filters -->
+                        <div class="grid grid-cols-2 gap-4 pt-6 border-t border-slate-100">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Attending Staff</label>
+                                <div class="relative">
+                                    <select class="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-xs font-bold text-slate-600 appearance-none">
+                                        <option>All Staff Members</option>
+                                        <option>Dr. Dizon</option>
+                                        <option>Dr. Sarapuddin</option>
+                                    </select>
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none text-[16px]">expand_more</span>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Detail Level</label>
+                                <div class="relative">
+                                    <select id="detail-level-select" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-xs font-bold text-slate-600 appearance-none">
+                                        <option value="comprehensive">Comprehensive Breakdown</option>
+                                        <option value="executive">Executive Summary</option>
+                                        <option value="raw">Raw Data Export</option>
+                                        <option value="visit-stats">Visit Reason Statistics</option>
+                                    </select>
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none text-[16px]">expand_more</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Col 3: Quick Preview & Actions (4 cols) -->
+                    <div class="lg:col-span-4 bg-slate-50/50 flex flex-col justify-between">
+                        <!-- Quick Preview Card -->
+                        <div class="p-6 flex-1">
+                            <div class="bg-gradient-to-br from-[#1c2a59] to-[#003d7c] rounded-2xl p-6 text-white relative overflow-hidden shadow-lg shadow-blue-900/10 h-full flex flex-col">
+                                <div class="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-blue-400/10 rounded-full blur-2xl"></div>
+                                <div class="absolute bottom-0 left-0 -ml-8 -mb-8 w-24 h-24 bg-indigo-400/10 rounded-full blur-2xl"></div>
+
+                                <div class="relative flex items-center justify-between mb-4">
+                                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-200 opacity-80">Quick Preview</span>
+                                    <span class="material-symbols-outlined text-white/50 text-[18px]">analytics</span>
+                                </div>
+
+                                <div id="preview-content" class="relative flex-1 flex flex-col justify-center space-y-5">
+                                    <div>
+                                        <h4 class="text-base font-bold text-white tracking-tight">Daily Patient Logs</h4>
+                                        <p class="text-[10px] text-blue-200/60 font-medium mt-0.5">Estimated export metrics</p>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                                            <p class="text-[8px] font-black text-blue-200/50 uppercase tracking-widest mb-0.5">Records</p>
+                                            <p class="text-xl font-extrabold" id="preview-count">248</p>
+                                        </div>
+                                        <div class="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                                            <p class="text-[8px] font-black text-blue-200/50 uppercase tracking-widest mb-0.5">Pages</p>
+                                            <p class="text-xl font-extrabold" id="preview-pages">12</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-3 border-t border-white/10 space-y-2 mt-auto" id="preview-features">
+                                        <div class="flex items-center gap-2 text-[10px] text-blue-100/80 font-medium">
+                                            <span class="material-symbols-outlined text-[12px] text-emerald-400">check_circle</span> Includes Patient ID & Diagnosis
+                                        </div>
+                                        <div class="flex items-center gap-2 text-[10px] text-blue-100/80 font-medium">
+                                            <span class="material-symbols-outlined text-[12px] text-emerald-400">check_circle</span> Includes Medicine Dispensed
+                                        </div>
+                                        <div class="flex items-center gap-2 text-[10px] text-blue-100/80 font-medium">
+                                            <span class="material-symbols-outlined text-[12px] text-emerald-400">check_circle</span> Staff Attendance Summary
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Footer -->
+                        <div class="p-6 bg-white border-t border-slate-100 space-y-3">
+                            <button onclick="previewSample()" class="w-full py-3.5 bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                Preview Sample Report
+                            </button>
+                            <button onclick="generateReport()" class="w-full py-3.5 bg-primary hover:bg-[#003d7c] text-white rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-primary/20">
+                                <span class="material-symbols-outlined text-[18px]">cloud_download</span>
+                                Generate & Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Recent Reports (Full Width) -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between px-2">
+                    <h2 class="font-headline text-xl font-extrabold text-[#1c2a59]">Recent Exports</h2>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 2 Ready
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/50 border-b border-slate-100">
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        Report Detail</th>
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        Created</th>
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        Size</th>
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        Format</th>
+                                    <th
+                                        class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        Status</th>
+                                    <th class="px-8 py-5 w-24"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                <tr class="hover:bg-slate-50/50 transition-colors group">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-[20px]">patient_list</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-slate-800 text-sm">Monthly Patient Log - April
+                                                    2024</p>
+                                                <p
+                                                    class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                                    Comprehensive • 248 Records</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-bold text-slate-500">Today, 09:15 AM</td>
+                                    <td class="px-8 py-5 text-sm font-bold text-slate-400">1.2 MB</td>
+                                    <td class="px-8 py-5">
+                                        <span
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-tighter">PDF</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600">
+                                            Available
+                                        </span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <button
+                                            class="w-10 h-10 flex items-center justify-center bg-slate-50 hover:bg-primary hover:text-white rounded-xl text-slate-400 transition-all active:scale-90">
+                                            <span class="material-symbols-outlined text-[20px]">download</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/50 transition-colors group">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-slate-800 text-sm">Low Stock Alert Report</p>
+                                                <p
+                                                    class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                                    Summary • 12 Items</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-sm font-bold text-slate-500">Yesterday, 04:30 PM</td>
+                                    <td class="px-8 py-5 text-sm font-bold text-slate-400">45 KB</td>
+                                    <td class="px-8 py-5">
+                                        <span
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-tighter">EXCEL</span>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600">
+                                            Available
+                                        </span>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <button
+                                            class="w-10 h-10 flex items-center justify-center bg-slate-50 hover:bg-primary hover:text-white rounded-xl text-slate-400 transition-all active:scale-90">
+                                            <span class="material-symbols-outlined text-[20px]">download</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Table Pagination -->
+                    <div
+                        class="p-6 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Showing <span
+                                class="text-slate-700">1-10</span> of <span class="text-slate-700">24</span> Exports</p>
+                        <div class="flex items-center gap-2">
+                            <button
+                                class="w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-400 flex items-center justify-center hover:bg-slate-50 transition-all cursor-not-allowed">
+                                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                            </button>
+                            <div class="flex items-center gap-1">
+                                <button
+                                    class="w-9 h-9 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center shadow-md shadow-primary/20">1</button>
+                                <button
+                                    class="w-9 h-9 rounded-xl bg-white border border-transparent hover:border-slate-200 text-slate-500 text-xs font-bold flex items-center justify-center transition-all">2</button>
+                                <button
+                                    class="w-9 h-9 rounded-xl bg-white border border-transparent hover:border-slate-200 text-slate-500 text-xs font-bold flex items-center justify-center transition-all">3</button>
+                            </div>
+                            <button
+                                class="w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-600 flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95">
+                                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal-backdrop items-center justify-center p-4">
+        <div
+            class="modal-content bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-red-500/5 rounded-full blur-3xl"></div>
+            <div class="relative flex flex-col items-center text-center">
+                <div
+                    class="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-red-100">
+                    <span class="material-symbols-outlined text-3xl">logout</span>
+                </div>
+                <h3 class="font-headline text-2xl font-extrabold text-[#1c2a59] mb-2">Confirm Logout</h3>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8">Are you sure you want to log out? Any
+                    unsaved changes in the current session may be lost.</p>
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="hideModal('logoutModal')"
+                        class="flex-1 px-6 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">Cancel</button>
+                    <button onclick="window.location.href='screen1-landing.html'"
+                        class="flex-1 px-6 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-red-900/20 active:scale-[0.98]">Log
+                        Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample Report Modal -->
+    <div id="sampleReportModal" class="modal-backdrop items-center justify-center p-4">
+        <div
+            class="modal-content bg-white rounded-[2rem] w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-outline-variant/10">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+                        <span class="material-symbols-outlined text-2xl" id="sample-modal-icon">patient_list</span>
+                    </div>
+                    <div>
+                        <h3 class="font-headline text-xl font-extrabold text-[#1c2a59]" id="sample-modal-title">Daily
+                            Patient Log</h3>
+                        <p class="text-[12px] font-bold text-slate-400" id="sample-modal-subtitle">Sample Report Preview
+                            • May 2024</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">print</span> Print
+                    </button>
+                    <button onclick="hideModal('sampleReportModal')"
+                        class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-200 text-slate-400 transition-all">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="flex-1 overflow-y-auto p-8 custom-scrollbar bg-white">
+                <div class="max-w-4xl mx-auto space-y-8">
+                    <!-- Report Header (Inner) -->
+                    <div class="flex justify-between items-start border-b-2 border-slate-900 pb-6">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-14 h-14 bg-primary flex items-center justify-center text-white font-black text-xl rounded-lg">
+                                PLP</div>
+                            <div>
+                                <h1 class="text-xl font-black text-slate-900">PAMANTASAN NG LUNGSOD NG PASIG</h1>
+                                <p class="text-xs font-bold text-slate-500">University Health Services Office •
+                                    ClinicConnect System</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Generated On</p>
+                            <p class="text-sm font-bold text-slate-800">May 1, 2024 • 06:08 PM</p>
+                        </div>
+                    </div>
+
+                    <!-- Report Content Table -->
+                    <div id="sample-report-table-container">
+                        <!-- Dynamic Content Injected Here -->
+                    </div>
+
+                    <!-- Report Footer -->
+                    <div class="pt-8 border-t border-slate-100 flex justify-between items-end">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Report
+                                Certified By</p>
+                            <div class="w-48 border-b border-slate-900 mb-1"></div>
+                            <p class="text-xs font-bold text-slate-900">Clinic Administrator</p>
+                        </div>
+                        <div class="text-right text-[10px] font-bold text-slate-300">
+                            Page 1 of 1 • System-generated report from ClinicConnect
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Generating Modal (Simulated) -->
+    <div id="generatingModal" class="modal-backdrop items-center justify-center p-4">
+        <div
+            class="modal-content bg-white rounded-[2.5rem] w-full max-w-sm p-8 shadow-2xl border border-outline-variant/10">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-20 h-20 mb-6 relative">
+                    <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                    <div
+                        class="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin">
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-3xl">description</span>
+                    </div>
+                </div>
+                <h3 class="font-headline text-xl font-extrabold text-[#1c2a59] mb-2">Generating Report</h3>
+                <p class="text-slate-500 text-sm mb-6">Processing records and formatting your document. This won't take
+                    long...</p>
+                <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-primary h-full w-2/3 animate-[progress_2s_ease-in-out_infinite]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const sampleData = {
+            'patient-logs': {
+                title: 'Daily Patient Logs',
+                icon: 'patient_list',
+                columns: ['Date', 'Patient Name', 'ID Number', 'Diagnosis/Complaint', 'Attending Staff'],
+                rows: [
+                    ['May 1, 2024', 'Maria Santos', '2021-8831', 'Fever & Chills', 'Dr. Dizon'],
+                    ['May 1, 2024', 'John Doe', '2023-0142', 'General Checkup', 'Dr. Sarapuddin'],
+                    ['May 2, 2024', 'Alice Reyes', 'STAFF-102', 'Hypertension Follow-up', 'N. Mortil'],
+                    ['May 2, 2024', 'Carl Dizon', '2022-3124', 'Migraine', 'N. Peña'],
+                    ['May 3, 2024', 'Liza Macapagal', '2024-0010', 'Medical Clearance', 'Dr. Dizon'],
+                    ['May 3, 2024', 'Robert Chen', '2021-0055', 'Sore Throat', 'Dr. Sarapuddin'],
+                    ['May 4, 2024', 'Elena Gilbert', '2022-9981', 'Sprained Ankle', 'N. Mortil']
+                ],
+                count: 248,
+                pages: 12,
+                features: ['Includes Patient ID & Diagnosis', 'Includes Medicine Dispensed', 'Staff Attendance Summary']
+            },
+            'inventory': {
+                title: 'Inventory & Asset Tracking Report',
+                icon: 'inventory_2',
+                columns: ['Item Name', 'Category', 'Stock / Status', 'Return Condition', 'Return Notes'],
+                rows: [
+                    ['Paracetamol 500mg', 'Medicine', '1,200 tabs', 'N/A', '—'],
+                    ['Infrared Thermometer', 'Equipment', 'Returned', 'Good', 'Fully functional'],
+                    ['Heating Pad (Electric)', 'Equipment', 'Returned', 'Defective', 'Broken cord, needs repair'],
+                    ['Nebulizer Kit', 'Equipment', 'Returned', 'Good', 'Sanitized after use'],
+                    ['Amoxicillin 250mg', 'Medicine', '450 tabs', 'N/A', '—'],
+                    ['Ibuprofen 400mg', 'Medicine', '85 tabs', 'N/A', 'Low stock alert'],
+                    ['Surgical Masks', 'PPE', '500 pcs', 'N/A', '—']
+                ],
+                count: 84,
+                pages: 4,
+                features: ['Stock Level Alerts', 'Equipment Return Details', 'Asset Condition History']
+            },
+            'archives': {
+                title: 'Archived Inventory Report',
+                icon: 'archive',
+                columns: ['Item Name', 'Category', 'Archived Date', 'Reason for Archival', 'Status'],
+                rows: [
+                    ['Ascorbic Acid (Old Batch)', 'Medicine', 'Apr 15, 2024', 'Expired batch', 'Archived'],
+                    ['Stethoscope (Classic)', 'Equipment', 'Mar 22, 2024', 'Decommissioned / Damaged', 'Archived'],
+                    ['Cough Syrup (Bulk 5L)', 'Medicine', 'Feb 10, 2024', 'Storage damage / Leakage', 'Archived'],
+                    ['Digital Scale (A-100)', 'Equipment', 'Jan 05, 2024', 'Replaced with newer model', 'Archived'],
+                    ['Antiseptic Solution', 'Medicine', 'Dec 12, 2023', 'Contamination risk identified', 'Archived'],
+                    ['Omeprazole 20mg', 'Medicine', 'Nov 30, 2023', 'Expired batch (LOT-2022)', 'Archived'],
+                    ['Wheelchair (Standard)', 'Equipment', 'Oct 05, 2023', 'Structural damage to frame', 'Archived'],
+                    ['Infrared Thermometer', 'Equipment', 'Aug 12, 2023', 'Sensor calibration failure', 'Archived'],
+                    ['Heating Pad (Electric)', 'Equipment', 'Jul 25, 2023', 'Frayed power cable', 'Archived'],
+                    ['Oxygen Tank (Small)', 'Equipment', 'Jun 18, 2023', 'Expired certification', 'Archived'],
+                    ['Surgical Masks (3-Ply)', 'Medicine', 'Sep 20, 2023', 'Water damage to storage box', 'Archived']
+                ],
+                count: 42,
+                pages: 3,
+                features: ['Historical Audit Trail', 'Reason for Decommissioning', 'Asset Lifecycle Tracking']
+            },
+            'visit-stats': {
+                title: 'Visit Reason Statistics',
+                icon: 'pie_chart',
+                columns: ['Reason / Category', 'Patient Category', 'Total Visits', 'Percentage of Total'],
+                rows: [
+                    ['Annual Physical Exam (APE)', 'Student', '180', '40.0%'],
+                    ['Annual Physical Exam (APE)', 'Staff/Faculty', '22', '4.9%'],
+                    ['Medical Consult', 'Student', '85', '18.9%'],
+                    ['Medical Consult', 'Staff/Faculty', '28', '6.2%'],
+                    ['Dental Consult', 'Student', '75', '16.7%'],
+                    ['Dental Consult', 'Visitor', '15', '3.3%'],
+                    ['Wound Care', 'Student', '20', '4.4%'],
+                    ['Health Monitoring', 'Staff/Faculty', '15', '3.3%'],
+                    ['Pain Management', 'Student', '10', '2.2%']
+                ],
+                count: 450,
+                pages: 2,
+                features: ['Demographic Breakdown', 'Visit Frequency Analysis', 'Visual Charts Included']
+            }
+        };
+
+        let currentReportType = 'patient-logs';
+
+        function showModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        function selectReport(type) {
+            currentReportType = type;
+            // Update active states for report cards
+            document.querySelectorAll('.report-card').forEach(card => {
+                card.classList.remove('border-primary', 'bg-primary/5', 'report-card-active');
+                card.classList.add('border-transparent', 'bg-slate-50');
+                const title = card.querySelector('h3');
+                if (title) title.classList.remove('text-primary');
+            });
+
+            const activeCard = document.getElementById('report-' + type);
+            activeCard.classList.add('border-primary', 'bg-primary/5', 'report-card-active');
+            activeCard.classList.remove('border-transparent', 'bg-slate-50');
+            const activeTitle = activeCard.querySelector('h3');
+            if (activeTitle) activeTitle.classList.add('text-primary');
+
+            // Update Quick Preview
+            const data = sampleData[type];
+            document.querySelector('#preview-content h4').innerText = data.title;
+            document.getElementById('preview-count').innerText = data.count;
+            document.getElementById('preview-pages').innerText = data.pages;
+
+            // Update features
+            const featuresDiv = document.getElementById('preview-features');
+            featuresDiv.innerHTML = '';
+            data.features.forEach(feature => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center gap-2 text-[11px] text-blue-200';
+                div.innerHTML = `<span class="material-symbols-outlined text-[14px]">check_circle</span> ${feature}`;
+                featuresDiv.appendChild(div);
+            });
+        }
+
+        function selectFormat(format) {
+            ['pdf', 'excel', 'csv'].forEach(f => {
+                const btn = document.getElementById('format-' + f);
+                btn.classList.remove('bg-white', 'shadow-sm', 'text-primary');
+                btn.classList.add('text-slate-400', 'hover:bg-white/50');
+            });
+
+            const activeBtn = document.getElementById('format-' + format);
+            activeBtn.classList.add('bg-white', 'shadow-sm', 'text-primary');
+            activeBtn.classList.remove('text-slate-400', 'hover:bg-white/50');
+        }
+
+        function previewSample() {
+            let reportKey = currentReportType;
+            const detailLevel = document.getElementById('detail-level-select');
+            if (detailLevel && currentReportType === 'patient-logs' && detailLevel.value === 'visit-stats') {
+                reportKey = 'visit-stats';
+            }
+            populateSampleReport(reportKey);
+            showModal('sampleReportModal');
+        }
+
+        function populateSampleReport(type) {
+            const data = sampleData[type];
+            document.getElementById('sample-modal-title').innerText = data.title;
+            document.getElementById('sample-modal-icon').innerText = data.icon;
+
+            let tableHtml = `
+                <table class="w-full text-left border-collapse border border-slate-200">
+                    <thead>
+                        <tr class="bg-slate-900 text-white">
+                            ${data.columns.map(col => `<th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest border border-slate-800">${col}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody class="text-[12px] font-medium text-slate-700">
+                        ${data.rows.map(row => `
+                            <tr class="border border-slate-200 even:bg-slate-50">
+                                ${row.map(cell => `<td class="px-4 py-3 border border-slate-200">${cell}</td>`).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="mt-6 p-6 bg-slate-50 border border-slate-100 rounded-2xl">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Report Summary</p>
+                    <div class="grid grid-cols-3 gap-8">
+                        <div>
+                            <p class="text-[9px] font-bold text-slate-500 mb-1">Total Records</p>
+                            <p class="text-xl font-black text-[#1c2a59]">${data.count}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-bold text-slate-500 mb-1">Report Period</p>
+                            <p class="text-xl font-black text-[#1c2a59]">May 2024</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-bold text-slate-500 mb-1">Data Status</p>
+                            <p class="text-xl font-black text-emerald-600 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Verified
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('sample-report-table-container').innerHTML = tableHtml;
+        }
+
+        // Toast Container
+        const toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'fixed bottom-8 right-8 z-[2000] flex flex-col gap-3 pointer-events-none';
+        document.body.appendChild(toastContainer);
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-item pointer-events-auto flex items-center gap-4 bg-white border border-slate-100 p-4 pr-6 rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all duration-300`;
+            
+            const icon = type === 'success' ? 'check_circle' : 'error';
+            const iconColor = type === 'success' ? 'text-emerald-500' : 'text-red-500';
+            const bgColor = type === 'success' ? 'bg-emerald-50' : 'bg-red-50';
+
+            toast.innerHTML = `
+                <div class="w-12 h-12 ${bgColor} ${iconColor} rounded-2xl flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl">${icon}</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Notification</p>
+                    <p class="text-sm font-bold text-slate-700 leading-tight">${message}</p>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function generateReport() {
+            showModal('generatingModal');
+            setTimeout(() => {
+                hideModal('generatingModal');
+                setTimeout(() => {
+                    showToast('Report generated and downloaded successfully');
+                }, 400);
+            }, 2500);
+        }
+
+        // Close on backdrop click
+        ['logoutModal', 'sampleReportModal', 'generatingModal'].forEach(id => {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === this) hideModal(id);
+                });
+            }
+        });
+    </script>
+
+    <style>
+        @keyframes progress {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(200%);
+            }
+        }
+    </style>
+</body>
+
+</html>
