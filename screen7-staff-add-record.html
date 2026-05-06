@@ -198,8 +198,9 @@
                                         class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none bg-none">
                                         <option value="" disabled selected>Select Role...</option>
                                         <option>Student</option>
-                                        <option>Faculty Staff</option>
-                                        <option>Guest / Visitor</option>
+                                        <option>Faculty</option>
+                                        <option>NTP</option>
+                                        <option>Visitor</option>
                                     </select>
                                     <span
                                         class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
@@ -253,7 +254,7 @@
                                     class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Purpose
                                     of Visit</label>
                                 <div class="relative">
-                                    <select
+                                    <select id="purpose-select" onchange="toggleDentalProcedure()"
                                         class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none">
                                         <option>APE</option>
                                         <option>Health Monitoring</option>
@@ -261,6 +262,23 @@
                                         <option>Medical Consult</option>
                                         <option>Dental Consult</option>
                                         <option>Wound Care</option>
+                                    </select>
+                                    <span
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
+                                </div>
+                            </div>
+                            <div id="dental-procedure-field" class="hidden">
+                                <label
+                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Dental Procedure</label>
+                                <div class="relative">
+                                    <select
+                                        class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-[1rem] focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-bold text-slate-800 appearance-none">
+                                        <option value="" disabled selected>Select Procedure...</option>
+                                        <option>Oral Prophylaxis</option>
+                                        <option>Tooth Extraction</option>
+                                        <option>TFA (Temporary Filling)</option>
+                                        <option>Canker Sore Tx</option>
+                                        <option>Other / General Consult</option>
                                     </select>
                                     <span
                                         class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none">expand_more</span>
@@ -489,6 +507,16 @@
     <div id="toast-container" class="fixed bottom-8 right-8 z-[2000] flex flex-col gap-3 pointer-events-none"></div>
 
     <script>
+        function toggleDentalProcedure() {
+            const purposeSelect = document.getElementById('purpose-select');
+            const dentalField = document.getElementById('dental-procedure-field');
+            if (purposeSelect.value === 'Dental Consult') {
+                dentalField.classList.remove('hidden');
+            } else {
+                dentalField.classList.add('hidden');
+            }
+        }
+
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');

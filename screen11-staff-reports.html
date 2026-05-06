@@ -91,9 +91,15 @@
 
         /* Toast Animation */
         @keyframes toast-in {
-            from { transform: translateX(120%); }
-            to { transform: translateX(0); }
+            from {
+                transform: translateX(120%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
         }
+
         .toast-item {
             animation: toast-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
@@ -140,10 +146,7 @@
                 <div>
                     <h1 class="font-headline text-3xl font-extrabold text-[#1c2a59] tracking-tight">Reports & Analytics
                     </h1>
-                    <p class="text-sm font-semibold text-slate-500 mt-1 flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        Data is up to date as of today
-                    </p>
+
                 </div>
             </div>
 
@@ -153,112 +156,134 @@
                     <h2 class="font-headline text-xl font-extrabold text-[#1c2a59]">Statistics Overview</h2>
                     <p class="text-xs font-bold text-slate-500">Distribution of Patient Visits by Reason</p>
                 </div>
-                
-                <!-- Top Summary Metrics -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
-                    <div class="bg-white rounded-[1.5rem] border border-outline-variant/20 shadow-sm p-5 flex flex-col justify-center">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="w-8 h-8 rounded-full bg-blue-50 text-primary flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-[16px]">groups</span>
-                            </div>
-                            <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Total Visits</span>
+
+                <!-- Visit Reason Breakdown (Donut Type) -->
+                <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm p-6 lg:p-10">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                        <div>
+                            <h3 class="font-headline text-lg font-extrabold text-[#1c2a59]">Visit Reason Distribution
+                            </h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Institutional
+                                Statistical Breakdown</p>
                         </div>
-                        <p class="text-3xl font-extrabold text-[#1c2a59]">450</p>
+
+                        <!-- Consolidated Quick Stats -->
+                        <div class="flex items-center gap-4 lg:gap-8">
+                            <!-- Avg Daily Pill -->
+                            <div
+                                class="flex items-center gap-3 px-5 py-3 bg-emerald-50/50 rounded-2xl border border-emerald-100/50">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                                    <span class="material-symbols-outlined text-[16px]">monitoring</span>
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-[9px] font-black text-slate-400 uppercase tracking-tighter leading-none mb-1">
+                                        Avg. Daily</p>
+                                    <p class="text-lg font-black text-[#1c2a59] leading-none">28</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="bg-white rounded-[1.5rem] border border-outline-variant/20 shadow-sm p-5 flex flex-col justify-center">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-[16px]">monitoring</span>
+                    <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+                        <!-- Donut Chart -->
+                        <div class="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full flex items-center justify-center shrink-0 shadow-2xl shadow-blue-900/10"
+                            style="background: conic-gradient(#1c2a59 0% 45%, #10b981 45% 70%, #6366f1 70% 90%, #f59e0b 90% 94.5%, #f43f5e 94.5% 98%, #06b6d4 98% 100%)">
+                            <div
+                                class="w-32 h-32 sm:w-40 sm:h-40 bg-white rounded-full flex flex-col items-center justify-center shadow-inner">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total
+                                </p>
+                                <p class="text-3xl font-black text-[#1c2a59]">450</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Visits
+                                </p>
                             </div>
-                            <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Avg. Daily</span>
                         </div>
-                        <p class="text-3xl font-extrabold text-[#1c2a59]">28<span class="text-sm font-bold text-slate-400 ml-1">patients</span></p>
-                    </div>
 
-                    <div class="bg-white rounded-[1.5rem] border border-outline-variant/20 shadow-sm p-5 flex flex-col justify-center">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-[16px]">event_available</span>
+                        <!-- Legend Grid -->
+                        <div class="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                            <!-- APE -->
+                            <div
+                                class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-white transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#1c2a59]"></div>
+                                    <span
+                                        class="text-xs font-bold text-slate-600 group-hover:text-primary transition-colors">APE</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-black text-slate-800">45%</p>
+                                    <p class="text-[9px] font-bold text-slate-400">202 Visits</p>
+                                </div>
                             </div>
-                            <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Busiest Day</span>
-                        </div>
-                        <p class="text-3xl font-extrabold text-[#1c2a59]">Mon</p>
-                    </div>
-
-                    <div class="bg-white rounded-[1.5rem] border border-outline-variant/20 shadow-sm p-5 flex flex-col justify-center">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-[16px]">medical_services</span>
+                            <!-- Medical -->
+                            <div
+                                class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-white transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#10b981]"></div>
+                                    <span
+                                        class="text-xs font-bold text-slate-600 group-hover:text-primary transition-colors">Medical
+                                        Consult</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-black text-slate-800">25%</p>
+                                    <p class="text-[9px] font-bold text-slate-400">113 Visits</p>
+                                </div>
                             </div>
-                            <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Top Reason</span>
-                        </div>
-                        <p class="text-3xl font-extrabold text-[#1c2a59]">APE</p>
-                    </div>
-                </div>
-
-                <!-- Breakdown Progress Bars -->
-                <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm p-6 lg:p-8">
-                    <h3 class="font-headline text-lg font-extrabold text-[#1c2a59] mb-6">Visit Reason Breakdown</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-                        <!-- Stat Item 1 -->
-                        <div>
-                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
-                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-primary"></div> Annual Physical Exam (APE)</span>
-                                <span>202 Visits</span>
+                            <!-- Dental -->
+                            <div
+                                class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-white transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#6366f1]"></div>
+                                    <span
+                                        class="text-xs font-bold text-slate-600 group-hover:text-primary transition-colors">Dental
+                                        Consult</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-black text-slate-800">20%</p>
+                                    <p class="text-[9px] font-bold text-slate-400">90 Visits</p>
+                                </div>
                             </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-primary h-2.5 rounded-full" style="width: 45%"></div>
+                            <!-- Wound -->
+                            <div
+                                class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-white transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></div>
+                                    <span
+                                        class="text-xs font-bold text-slate-600 group-hover:text-primary transition-colors">Wound
+                                        Care</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-black text-slate-800">4.5%</p>
+                                    <p class="text-[9px] font-bold text-slate-400">20 Visits</p>
+                                </div>
                             </div>
-                        </div>
-                        <!-- Stat Item 2 -->
-                        <div>
-                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
-                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> Medical Consult</span>
-                                <span>113 Visits</span>
+                            <!-- Health -->
+                            <div
+                                class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-white transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#f43f5e]"></div>
+                                    <span
+                                        class="text-xs font-bold text-slate-600 group-hover:text-primary transition-colors">Health
+                                        Monitoring</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-black text-slate-800">3.5%</p>
+                                    <p class="text-[9px] font-bold text-slate-400">15 Visits</p>
+                                </div>
                             </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-emerald-500 h-2.5 rounded-full" style="width: 25%"></div>
-                            </div>
-                        </div>
-                        <!-- Stat Item 3 -->
-                        <div>
-                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
-                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-indigo-500"></div> Dental Consult</span>
-                                <span>90 Visits</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-indigo-500 h-2.5 rounded-full" style="width: 20%"></div>
-                            </div>
-                        </div>
-                        <!-- Stat Item 4 -->
-                        <div>
-                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
-                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-amber-500"></div> Wound Care</span>
-                                <span>20 Visits</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-amber-500 h-2.5 rounded-full" style="width: 4.5%"></div>
-                            </div>
-                        </div>
-                        <!-- Stat Item 5 -->
-                        <div>
-                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
-                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-rose-500"></div> Health Monitoring</span>
-                                <span>15 Visits</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-rose-500 h-2.5 rounded-full" style="width: 3.5%"></div>
-                            </div>
-                        </div>
-                        <!-- Stat Item 6 -->
-                        <div>
-                            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
-                                <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-cyan-500"></div> Pain Management</span>
-                                <span>10 Visits</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-cyan-500 h-2.5 rounded-full" style="width: 2%"></div>
+                            <!-- Pain -->
+                            <div
+                                class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-white transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#06b6d4]"></div>
+                                    <span
+                                        class="text-xs font-bold text-slate-600 group-hover:text-primary transition-colors">Pain
+                                        Management</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-black text-slate-800">2%</p>
+                                    <p class="text-[9px] font-bold text-slate-400">10 Visits</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -266,26 +291,30 @@
             </div>
 
             <!-- Unified Report Generator -->
-            <div class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm overflow-hidden flex flex-col">
+            <div
+                class="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm overflow-hidden flex flex-col">
                 <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
-                    
+
                     <!-- Col 1: Report Type & Format (3 cols) -->
                     <div class="lg:col-span-3 p-6 space-y-6 bg-slate-50/30">
                         <div class="space-y-1">
                             <h2 class="font-headline text-lg font-extrabold text-[#1c2a59]">Report Type</h2>
                             <p class="text-xs text-slate-400 font-medium">Select data category</p>
                         </div>
-                        
+
                         <div class="space-y-2">
                             <!-- Report Option 1 -->
                             <button id="report-patient-logs" onclick="selectReport('patient-logs')"
                                 class="w-full text-left p-3 rounded-2xl border-2 border-primary bg-white shadow-sm group transition-all report-card report-card-active">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
                                         <span class="material-symbols-outlined text-[18px]">patient_list</span>
                                     </div>
                                     <div>
-                                        <h3 class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">Daily Patient Logs</h3>
+                                        <h3
+                                            class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">
+                                            Daily Patient Logs</h3>
                                     </div>
                                 </div>
                             </button>
@@ -294,11 +323,14 @@
                             <button id="report-inventory" onclick="selectReport('inventory')"
                                 class="w-full text-left p-3 rounded-2xl border-2 border-transparent hover:bg-white group transition-all report-card">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                                         <span class="material-symbols-outlined text-[18px]">inventory_2</span>
                                     </div>
                                     <div>
-                                        <h3 class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">Inventory Tracking</h3>
+                                        <h3
+                                            class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">
+                                            Inventory Tracking</h3>
                                     </div>
                                 </div>
                             </button>
@@ -307,11 +339,55 @@
                             <button id="report-archives" onclick="selectReport('archives')"
                                 class="w-full text-left p-3 rounded-2xl border-2 border-transparent hover:bg-white group transition-all report-card">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
                                         <span class="material-symbols-outlined text-[18px]">archive</span>
                                     </div>
                                     <div>
-                                        <h3 class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">Archived Inventory</h3>
+                                        <h3
+                                            class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">
+                                            Archived Inventory</h3>
+                                    </div>
+                                </div>
+                            </button>
+
+                            <div class="flex items-center gap-2 pt-3 pb-1">
+                                <div class="flex-1 h-px bg-slate-200"></div>
+                                <span
+                                    class="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em]">Quarterly</span>
+                                <div class="flex-1 h-px bg-slate-200"></div>
+                            </div>
+
+                            <!-- Report Option 4: Quarterly Health Services -->
+                            <button id="report-quarterly-health" onclick="selectReport('quarterly-health')"
+                                class="w-full text-left p-3 rounded-2xl border-2 border-transparent hover:bg-white group transition-all report-card">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-[18px]">vital_signs</span>
+                                    </div>
+                                    <div>
+                                        <h3
+                                            class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">
+                                            Health Services</h3>
+                                        <p class="text-[9px] text-slate-400 font-bold">Quarterly Summary</p>
+                                    </div>
+                                </div>
+                            </button>
+
+                            <!-- Report Option 5: Quarterly Dental Services -->
+                            <button id="report-quarterly-dental" onclick="selectReport('quarterly-dental')"
+                                class="w-full text-left p-3 rounded-2xl border-2 border-transparent hover:bg-white group transition-all report-card">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-[18px]">dentistry</span>
+                                    </div>
+                                    <div>
+                                        <h3
+                                            class="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">
+                                            Dental Services</h3>
+                                        <p class="text-[9px] text-slate-400 font-bold">Quarterly Summary</p>
                                     </div>
                                 </div>
                             </button>
@@ -335,53 +411,109 @@
                         <div class="space-y-6">
                             <div class="flex justify-between items-center mb-2">
                                 <h2 class="font-headline text-lg font-extrabold text-[#1c2a59]">Report Parameters</h2>
-                                <button class="text-[10px] font-bold text-primary hover:underline uppercase tracking-widest">Reset Filters</button>
+                                <button
+                                    class="text-[10px] font-bold text-primary hover:underline uppercase tracking-widest">Reset
+                                    Filters</button>
                             </div>
-                            
-                            <!-- Date Configuration -->
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Timeframe</label>
+
+                            <!-- Standard Date Configuration -->
+                            <div id="standard-params" class="space-y-4">
+                                <label
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Timeframe</label>
                                 <div class="grid grid-cols-3 gap-2">
-                                    <button class="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 transition-all hover:bg-slate-100">This Month</button>
-                                    <button class="px-3 py-2.5 rounded-xl bg-white border border-slate-100 text-xs font-bold text-slate-500 transition-all hover:border-slate-200">7 Days</button>
-                                    <button class="px-3 py-2.5 rounded-xl bg-white border border-slate-100 text-xs font-bold text-slate-500 transition-all hover:border-slate-200">Custom</button>
+                                    <button
+                                        class="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 transition-all hover:bg-slate-100">This
+                                        Month</button>
+                                    <button
+                                        class="px-3 py-2.5 rounded-xl bg-white border border-slate-100 text-xs font-bold text-slate-500 transition-all hover:border-slate-200">7
+                                        Days</button>
+                                    <button
+                                        class="px-3 py-2.5 rounded-xl bg-white border border-slate-100 text-xs font-bold text-slate-500 transition-all hover:border-slate-200">Custom</button>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4 mt-2">
                                     <div class="space-y-1.5">
                                         <p class="text-[10px] font-bold text-slate-500 ml-1">Start Date</p>
-                                        <input type="date" class="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-sm font-semibold text-slate-700">
+                                        <input type="date" id="start-date"
+                                            class="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-sm font-semibold text-slate-700">
                                     </div>
                                     <div class="space-y-1.5">
                                         <p class="text-[10px] font-bold text-slate-500 ml-1">End Date</p>
-                                        <input type="date" class="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-sm font-semibold text-slate-700">
+                                        <input type="date" id="end-date"
+                                            class="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-sm font-semibold text-slate-700">
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Quarterly Parameters (shown for quarterly reports) -->
+                            <div id="quarterly-params" class="space-y-4 hidden">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quarter &
+                                    Period</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="space-y-1.5">
+                                        <p class="text-[10px] font-bold text-slate-500 ml-1">Quarter</p>
+                                        <div class="relative">
+                                            <select id="quarter-select" onchange="autoFillQuarterDates()"
+                                                class="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-xs font-bold text-slate-600 appearance-none">
+                                                <option value="Q1">Q1 — Jan to Mar</option>
+                                                <option value="Q2">Q2 — Apr to Jun</option>
+                                                <option value="Q3">Q3 — Jul to Sep</option>
+                                                <option value="Q4">Q4 — Oct to Dec</option>
+                                            </select>
+                                            <span
+                                                class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none text-[16px]">expand_more</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <p class="text-[10px] font-bold text-slate-500 ml-1">Academic Year</p>
+                                        <div class="relative">
+                                            <select id="acad-year-select"
+                                                class="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-xs font-bold text-slate-600 appearance-none">
+                                                <option value="2024-2025">A.Y. 2024–2025</option>
+                                                <option value="2023-2024">A.Y. 2023–2024</option>
+                                                <option value="2025-2026">A.Y. 2025–2026</option>
+                                            </select>
+                                            <span
+                                                class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none text-[16px]">expand_more</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="quarter-date-display"
+                                    class="flex items-center gap-2 px-3 py-2.5 bg-blue-50/50 border border-blue-100 rounded-xl">
+                                    <span class="material-symbols-outlined text-primary text-[16px]">date_range</span>
+                                    <span class="text-xs font-bold text-primary">Period: January 1 – March 31,
+                                        2025</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Filters -->
                         <div class="grid grid-cols-2 gap-4 pt-6 border-t border-slate-100">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Attending Staff</label>
+                            <div class="space-y-2" id="staff-filter-group">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Attending
+                                    Staff</label>
                                 <div class="relative">
-                                    <select class="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-xs font-bold text-slate-600 appearance-none">
+                                    <select
+                                        class="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-xs font-bold text-slate-600 appearance-none">
                                         <option>All Staff Members</option>
                                         <option>Dr. Dizon</option>
                                         <option>Dr. Sarapuddin</option>
                                     </select>
-                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none text-[16px]">expand_more</span>
+                                    <span
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none text-[16px]">expand_more</span>
                                 </div>
                             </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Detail Level</label>
+                            <div class="space-y-2" id="detail-level-group">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Detail
+                                    Level</label>
                                 <div class="relative">
-                                    <select id="detail-level-select" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-xs font-bold text-slate-600 appearance-none">
+                                    <select id="detail-level-select"
+                                        class="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-primary/10 text-xs font-bold text-slate-600 appearance-none">
                                         <option value="comprehensive">Comprehensive Breakdown</option>
                                         <option value="executive">Executive Summary</option>
                                         <option value="raw">Raw Data Export</option>
-                                        <option value="visit-stats">Visit Reason Statistics</option>
                                     </select>
-                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none text-[16px]">expand_more</span>
+                                    <span
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none text-[16px]">expand_more</span>
                                 </div>
                             </div>
                         </div>
@@ -391,54 +523,76 @@
                     <div class="lg:col-span-4 bg-slate-50/50 flex flex-col justify-between">
                         <!-- Quick Preview Card -->
                         <div class="p-6 flex-1">
-                            <div class="bg-gradient-to-br from-[#1c2a59] to-[#003d7c] rounded-2xl p-6 text-white relative overflow-hidden shadow-lg shadow-blue-900/10 h-full flex flex-col">
-                                <div class="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-blue-400/10 rounded-full blur-2xl"></div>
-                                <div class="absolute bottom-0 left-0 -ml-8 -mb-8 w-24 h-24 bg-indigo-400/10 rounded-full blur-2xl"></div>
+                            <div
+                                class="bg-gradient-to-br from-[#1c2a59] to-[#003d7c] rounded-2xl p-6 text-white relative overflow-hidden shadow-lg shadow-blue-900/10 h-full flex flex-col">
+                                <div
+                                    class="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-blue-400/10 rounded-full blur-2xl">
+                                </div>
+                                <div
+                                    class="absolute bottom-0 left-0 -ml-8 -mb-8 w-24 h-24 bg-indigo-400/10 rounded-full blur-2xl">
+                                </div>
 
                                 <div class="relative flex items-center justify-between mb-4">
-                                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-200 opacity-80">Quick Preview</span>
+                                    <span
+                                        class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-200 opacity-80">Quick
+                                        Preview</span>
                                     <span class="material-symbols-outlined text-white/50 text-[18px]">analytics</span>
                                 </div>
 
-                                <div id="preview-content" class="relative flex-1 flex flex-col justify-center space-y-5">
+                                <div id="preview-content"
+                                    class="relative flex-1 flex flex-col justify-center space-y-5">
                                     <div>
-                                        <h4 class="text-base font-bold text-white tracking-tight">Daily Patient Logs</h4>
-                                        <p class="text-[10px] text-blue-200/60 font-medium mt-0.5">Estimated export metrics</p>
+                                        <h4 class="text-base font-bold text-white tracking-tight">Daily Patient Logs
+                                        </h4>
+                                        <p class="text-[10px] text-blue-200/60 font-medium mt-0.5">Estimated export
+                                            metrics</p>
                                     </div>
 
                                     <div class="grid grid-cols-2 gap-3">
                                         <div class="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-                                            <p class="text-[8px] font-black text-blue-200/50 uppercase tracking-widest mb-0.5">Records</p>
+                                            <p
+                                                class="text-[8px] font-black text-blue-200/50 uppercase tracking-widest mb-0.5">
+                                                Records</p>
                                             <p class="text-xl font-extrabold" id="preview-count">248</p>
                                         </div>
                                         <div class="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-                                            <p class="text-[8px] font-black text-blue-200/50 uppercase tracking-widest mb-0.5">Pages</p>
+                                            <p
+                                                class="text-[8px] font-black text-blue-200/50 uppercase tracking-widest mb-0.5">
+                                                Pages</p>
                                             <p class="text-xl font-extrabold" id="preview-pages">12</p>
                                         </div>
                                     </div>
 
                                     <div class="pt-3 border-t border-white/10 space-y-2 mt-auto" id="preview-features">
                                         <div class="flex items-center gap-2 text-[10px] text-blue-100/80 font-medium">
-                                            <span class="material-symbols-outlined text-[12px] text-emerald-400">check_circle</span> Includes Patient ID & Diagnosis
+                                            <span
+                                                class="material-symbols-outlined text-[12px] text-emerald-400">check_circle</span>
+                                            Includes Patient ID & Diagnosis
                                         </div>
                                         <div class="flex items-center gap-2 text-[10px] text-blue-100/80 font-medium">
-                                            <span class="material-symbols-outlined text-[12px] text-emerald-400">check_circle</span> Includes Medicine Dispensed
+                                            <span
+                                                class="material-symbols-outlined text-[12px] text-emerald-400">check_circle</span>
+                                            Includes Medicine Dispensed
                                         </div>
                                         <div class="flex items-center gap-2 text-[10px] text-blue-100/80 font-medium">
-                                            <span class="material-symbols-outlined text-[12px] text-emerald-400">check_circle</span> Staff Attendance Summary
+                                            <span
+                                                class="material-symbols-outlined text-[12px] text-emerald-400">check_circle</span>
+                                            Staff Attendance Summary
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Action Footer -->
                         <div class="p-6 bg-white border-t border-slate-100 space-y-3">
-                            <button onclick="previewSample()" class="w-full py-3.5 bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                            <button onclick="previewSample()"
+                                class="w-full py-3.5 bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
                                 Preview Sample Report
                             </button>
-                            <button onclick="generateReport()" class="w-full py-3.5 bg-primary hover:bg-[#003d7c] text-white rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-primary/20">
+                            <button onclick="generateReport()"
+                                class="w-full py-3.5 bg-primary hover:bg-[#003d7c] text-white rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-primary/20">
                                 <span class="material-symbols-outlined text-[18px]">cloud_download</span>
                                 Generate & Download
                             </button>
@@ -476,9 +630,6 @@
                                     <th
                                         class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                         Format</th>
-                                    <th
-                                        class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                        Status</th>
                                     <th class="px-8 py-5 w-24"></th>
                                 </tr>
                             </thead>
@@ -505,11 +656,6 @@
                                         <span
                                             class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-tighter">PDF</span>
                                     </td>
-                                    <td class="px-8 py-5">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600">
-                                            Available
-                                        </span>
                                     </td>
                                     <td class="px-8 py-5 text-right">
                                         <button
@@ -539,12 +685,7 @@
                                         <span
                                             class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-tighter">EXCEL</span>
                                     </td>
-                                    <td class="px-8 py-5">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600">
-                                            Available
-                                        </span>
-                                    </td>
+
                                     <td class="px-8 py-5 text-right">
                                         <button
                                             class="w-10 h-10 flex items-center justify-center bg-slate-50 hover:bg-primary hover:text-white rounded-xl text-slate-400 transition-all active:scale-90">
@@ -642,21 +783,24 @@
             <!-- Modal Body (Scrollable) -->
             <div class="flex-1 overflow-y-auto p-8 custom-scrollbar bg-white">
                 <div class="max-w-4xl mx-auto space-y-8">
-                    <!-- Report Header (Inner) -->
-                    <div class="flex justify-between items-start border-b-2 border-slate-900 pb-6">
-                        <div class="flex items-center gap-4">
+                    <!-- Report Header (Inner) - Institution Letterhead -->
+                    <div class="text-center pb-5 border-b-2 border-slate-900">
+                        <div class="flex items-center justify-center gap-4 mb-2">
                             <div
-                                class="w-14 h-14 bg-primary flex items-center justify-center text-white font-black text-xl rounded-lg">
+                                class="w-14 h-14 bg-primary flex items-center justify-center text-white font-black text-xl rounded-lg shadow-lg shadow-primary/20">
                                 PLP</div>
-                            <div>
-                                <h1 class="text-xl font-black text-slate-900">PAMANTASAN NG LUNGSOD NG PASIG</h1>
-                                <p class="text-xs font-bold text-slate-500">University Health Services Office •
-                                    ClinicConnect System</p>
+                            <div class="text-left">
+                                <h1 class="text-lg font-black text-slate-900 uppercase tracking-wide">Pamantasan ng
+                                    Lungsod ng Pasig</h1>
+                                <p class="text-[10px] font-bold text-slate-500 tracking-wide">Alcalde Jose St., Barangay
+                                    Kapasigan, Pasig City 1600 Metro Manila</p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Generated On</p>
-                            <p class="text-sm font-bold text-slate-800">May 1, 2024 • 06:08 PM</p>
+                        <div id="report-subtitle-block" class="mt-3 pt-3 border-t border-slate-200">
+                            <p class="text-sm font-black text-primary uppercase tracking-widest"
+                                id="report-inner-title">UNIVERSITY HEALTH SERVICES</p>
+                            <p class="text-[11px] font-bold text-slate-500 mt-1" id="report-inner-period">First Quarter
+                                • A.Y. 2024–2025</p>
                         </div>
                     </div>
 
@@ -665,13 +809,30 @@
                         <!-- Dynamic Content Injected Here -->
                     </div>
 
-                    <!-- Report Footer -->
-                    <div class="pt-8 border-t border-slate-100 flex justify-between items-end">
-                        <div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Report
-                                Certified By</p>
-                            <div class="w-48 border-b border-slate-900 mb-1"></div>
-                            <p class="text-xs font-bold text-slate-900">Clinic Administrator</p>
+                    <!-- Report Footer - Signature Block -->
+                    <div class="pt-8 border-t border-slate-200 space-y-8">
+                        <div class="grid grid-cols-3 gap-8">
+                            <div class="text-center">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-6">Prepared
+                                    by</p>
+                                <div class="w-full border-b border-slate-900 mb-1"></div>
+                                <p class="text-[11px] font-bold text-slate-900">Clinic Staff</p>
+                                <p class="text-[9px] font-medium text-slate-400">ClinicConnect System</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-6">Noted by
+                                </p>
+                                <div class="w-full border-b border-slate-900 mb-1"></div>
+                                <p class="text-[11px] font-bold text-slate-900">University Physician</p>
+                                <p class="text-[9px] font-medium text-slate-400">Health Services Office</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-6">Certified
+                                    Correct</p>
+                                <div class="w-full border-b border-slate-900 mb-1"></div>
+                                <p class="text-[11px] font-bold text-slate-900">Clinic Administrator</p>
+                                <p class="text-[9px] font-medium text-slate-400">UHSO Director</p>
+                            </div>
                         </div>
                         <div class="text-right text-[10px] font-bold text-slate-300">
                             Page 1 of 1 • System-generated report from ClinicConnect
@@ -713,19 +874,19 @@
             'patient-logs': {
                 title: 'Daily Patient Logs',
                 icon: 'patient_list',
-                columns: ['Date', 'Patient Name', 'ID Number', 'Diagnosis/Complaint', 'Attending Staff'],
+                columns: ['Date', 'Time In', 'Name', 'Category', 'Dept/Course', 'Reason for Visit', 'Chief Complaint', 'Tracking and Dispensing', 'Handled By'],
                 rows: [
-                    ['May 1, 2024', 'Maria Santos', '2021-8831', 'Fever & Chills', 'Dr. Dizon'],
-                    ['May 1, 2024', 'John Doe', '2023-0142', 'General Checkup', 'Dr. Sarapuddin'],
-                    ['May 2, 2024', 'Alice Reyes', 'STAFF-102', 'Hypertension Follow-up', 'N. Mortil'],
-                    ['May 2, 2024', 'Carl Dizon', '2022-3124', 'Migraine', 'N. Peña'],
-                    ['May 3, 2024', 'Liza Macapagal', '2024-0010', 'Medical Clearance', 'Dr. Dizon'],
-                    ['May 3, 2024', 'Robert Chen', '2021-0055', 'Sore Throat', 'Dr. Sarapuddin'],
-                    ['May 4, 2024', 'Elena Gilbert', '2022-9981', 'Sprained Ankle', 'N. Mortil']
+                    ['May 1, 2024', '08:30 AM', 'Maria Santos', 'Student', 'BS Nursing', 'Health Monitoring', 'Fever & Chills', 'Paracetamol (2 tabs)', 'Dr. Dizon'],
+                    ['May 1, 2024', '09:15 AM', 'John Doe', 'Student', 'BSCS', 'Medical Consult', 'General Checkup', 'None (Consult Only)', 'Dr. Sarapuddin'],
+                    ['May 2, 2024', '10:05 AM', 'Alice Reyes', 'Faculty', 'HR Dept', 'Health Monitoring', 'BP Monitoring', 'None', 'N. Mortil'],
+                    ['May 2, 2024', '11:45 AM', 'Carl Dizon', 'Student', 'BSHM', 'Pain Management', 'Migraine', 'Ibuprofen (1 tab)', 'N. Peña'],
+                    ['May 3, 2024', '01:20 PM', 'Liza Macapagal', 'Student', 'BSECE', 'APE', 'Medical Clearance', 'None', 'Dr. Dizon'],
+                    ['May 3, 2024', '02:50 PM', 'Robert Chen', 'Student', 'BSIT', 'Medical Consult', 'Sore Throat', 'Lozenges (3 pcs)', 'Dr. Sarapuddin'],
+                    ['May 4, 2024', '03:10 PM', 'Elena Gilbert', 'NTP', 'Admin Office', 'Wound Care', 'Sprained Ankle', 'Elastic Bandage (Applied)', 'N. Mortil']
                 ],
                 count: 248,
                 pages: 12,
-                features: ['Includes Patient ID & Diagnosis', 'Includes Medicine Dispensed', 'Staff Attendance Summary']
+                features: ['Includes Detailed Management', 'Includes Arrival Time & Dept', 'Categorized by Visit Reason']
             },
             'inventory': {
                 title: 'Inventory & Asset Tracking Report',
@@ -765,24 +926,42 @@
                 pages: 3,
                 features: ['Historical Audit Trail', 'Reason for Decommissioning', 'Asset Lifecycle Tracking']
             },
-            'visit-stats': {
-                title: 'Visit Reason Statistics',
-                icon: 'pie_chart',
-                columns: ['Reason / Category', 'Patient Category', 'Total Visits', 'Percentage of Total'],
-                rows: [
-                    ['Annual Physical Exam (APE)', 'Student', '180', '40.0%'],
-                    ['Annual Physical Exam (APE)', 'Staff/Faculty', '22', '4.9%'],
-                    ['Medical Consult', 'Student', '85', '18.9%'],
-                    ['Medical Consult', 'Staff/Faculty', '28', '6.2%'],
-                    ['Dental Consult', 'Student', '75', '16.7%'],
-                    ['Dental Consult', 'Visitor', '15', '3.3%'],
-                    ['Wound Care', 'Student', '20', '4.4%'],
-                    ['Health Monitoring', 'Staff/Faculty', '15', '3.3%'],
-                    ['Pain Management', 'Student', '10', '2.2%']
+            'quarterly-health': {
+                title: 'University Health Services',
+                icon: 'vital_signs',
+                isQuarterly: true,
+                headerColor: '#4a7c3f',
+                caption: 'Common Reasons for Visiting the Clinic by Students and Personnel',
+                serviceGroups: ['HEALTH MONITORING', 'APE', 'PAIN MANAGEMENT', 'MEDICAL CONSULT', 'DENTAL CONSULT', 'WOUND CARE'],
+                months: ['JAN', 'FEB', 'MAR'],
+                categories: [
+                    { label: 'STUDENT', data: [[40, 127, 64, 231], [20, 20, 1, 41], [19, 77, 96, 192], [8, 68, 8, 84], [5, 4, 13, 22], [10, 26, 17, 53]] },
+                    { label: 'FACULTY', data: [[5, 6, 1, 12], [0, 0, 0, 0], [0, 0, 0, 0], [1, 4, 1, 6], [0, 1, 0, 1], [0, 3, 2, 5]] },
+                    { label: 'NTP', data: [[22, 17, 13, 52], [0, 0, 0, 0], [0, 3, 4, 7], [0, 3, 2, 5], [0, 14, 0, 14], [0, 3, 2, 5]] },
+                    { label: 'VISITOR', data: [[0, 1, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]] }
                 ],
-                count: 450,
-                pages: 2,
-                features: ['Demographic Breakdown', 'Visit Frequency Analysis', 'Visual Charts Included']
+                count: 296,
+                pages: 1,
+                features: ['Monthly Breakdown per Service', 'Patient Category Grouping', 'Auto-computed Totals']
+            },
+            'quarterly-dental': {
+                title: 'Dental Services',
+                icon: 'dentistry',
+                isQuarterly: true,
+                headerColor: '#1a5276',
+                caption: 'Services Availed by Students and Personnel',
+                serviceGroups: ['APE', 'CONSULT', 'ORAL PROPHYLAXIS', 'TOOTH EXTRACTION', 'TFA', 'CANKER SORE TX'],
+                months: ['JAN', 'FEB', 'MAR'],
+                categories: [
+                    { label: '1ST YR', data: [[0, 0, 0, 0], [0, 5, 0, 5], [0, 1, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]] },
+                    { label: '2ND YR', data: [[361, 0, 0, 361], [4, 1, 0, 5], [0, 14, 0, 14], [0, 1, 0, 1], [1, 7, 0, 8], [1, 0, 0, 1]] },
+                    { label: '3RD YR', data: [[0, 0, 0, 0], [0, 2, 0, 2], [0, 5, 1, 6], [0, 1, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0]] },
+                    { label: '4TH YR', data: [[0, 6, 0, 6], [2, 11, 0, 13], [0, 10, 0, 10], [0, 5, 0, 5], [1, 4, 0, 5], [0, 0, 0, 0]] },
+                    { label: 'PERS.', data: [[0, 8, 0, 8], [3, 2, 8, 13], [1, 2, 0, 3], [0, 1, 0, 1], [0, 1, 0, 1], [0, 0, 0, 0]] }
+                ],
+                count: 361,
+                pages: 1,
+                features: ['Year Level Breakdown', 'Dental Sub-service Tracking', 'Personnel Included']
             }
         };
 
@@ -806,7 +985,6 @@
 
         function selectReport(type) {
             currentReportType = type;
-            // Update active states for report cards
             document.querySelectorAll('.report-card').forEach(card => {
                 card.classList.remove('border-primary', 'bg-primary/5', 'report-card-active');
                 card.classList.add('border-transparent', 'bg-slate-50');
@@ -820,13 +998,24 @@
             const activeTitle = activeCard.querySelector('h3');
             if (activeTitle) activeTitle.classList.add('text-primary');
 
+            // Toggle quarterly vs standard parameters
+            const isQuarterly = type.startsWith('quarterly-');
+            document.getElementById('standard-params').classList.toggle('hidden', isQuarterly);
+            document.getElementById('quarterly-params').classList.toggle('hidden', !isQuarterly);
+            document.getElementById('staff-filter-group').classList.toggle('hidden', isQuarterly);
+            document.getElementById('detail-level-group').classList.toggle('hidden', isQuarterly);
+
+            if (isQuarterly) {
+                autoFillQuarterDates();
+                document.getElementById('table-number-input').value = type === 'quarterly-health' ? 'Table 7' : 'Table 9';
+            }
+
             // Update Quick Preview
             const data = sampleData[type];
             document.querySelector('#preview-content h4').innerText = data.title;
             document.getElementById('preview-count').innerText = data.count;
             document.getElementById('preview-pages').innerText = data.pages;
 
-            // Update features
             const featuresDiv = document.getElementById('preview-features');
             featuresDiv.innerHTML = '';
             data.features.forEach(feature => {
@@ -835,6 +1024,28 @@
                 div.innerHTML = `<span class="material-symbols-outlined text-[14px]">check_circle</span> ${feature}`;
                 featuresDiv.appendChild(div);
             });
+        }
+
+        function autoFillQuarterDates() {
+            const q = document.getElementById('quarter-select').value;
+            const ay = document.getElementById('acad-year-select').value;
+            const year = parseInt(ay.split('-')[0]);
+            const quarterMap = {
+                'Q1': { months: ['JAN', 'FEB', 'MAR'], label: 'January 1 – March 31', qYear: year + 1, qLabel: 'First Quarter' },
+                'Q2': { months: ['APR', 'MAY', 'JUN'], label: 'April 1 – June 30', qYear: year + 1, qLabel: 'Second Quarter' },
+                'Q3': { months: ['JUL', 'AUG', 'SEP'], label: 'July 1 – September 30', qYear: year, qLabel: 'Third Quarter' },
+                'Q4': { months: ['OCT', 'NOV', 'DEC'], label: 'October 1 – December 31', qYear: year, qLabel: 'Fourth Quarter' }
+            };
+            const info = quarterMap[q];
+            document.getElementById('quarter-date-display').querySelector('span:last-child').textContent =
+                `Period: ${info.label}, ${info.qYear}`;
+
+            // Update the months in sampleData for the selected quarter
+            if (sampleData[currentReportType] && sampleData[currentReportType].isQuarterly) {
+                sampleData[currentReportType].months = info.months;
+                sampleData[currentReportType]._quarterLabel = info.qLabel;
+                sampleData[currentReportType]._acadYear = `A.Y. ${ay.replace('-', '–')}`;
+            }
         }
 
         function selectFormat(format) {
@@ -850,12 +1061,7 @@
         }
 
         function previewSample() {
-            let reportKey = currentReportType;
-            const detailLevel = document.getElementById('detail-level-select');
-            if (detailLevel && currentReportType === 'patient-logs' && detailLevel.value === 'visit-stats') {
-                reportKey = 'visit-stats';
-            }
-            populateSampleReport(reportKey);
+            populateSampleReport(currentReportType);
             showModal('sampleReportModal');
         }
 
@@ -864,41 +1070,267 @@
             document.getElementById('sample-modal-title').innerText = data.title;
             document.getElementById('sample-modal-icon').innerText = data.icon;
 
-            let tableHtml = `
-                <table class="w-full text-left border-collapse border border-slate-200">
-                    <thead>
-                        <tr class="bg-slate-900 text-white">
-                            ${data.columns.map(col => `<th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest border border-slate-800">${col}</th>`).join('')}
-                        </tr>
-                    </thead>
-                    <tbody class="text-[12px] font-medium text-slate-700">
-                        ${data.rows.map(row => `
-                            <tr class="border border-slate-200 even:bg-slate-50">
-                                ${row.map(cell => `<td class="px-4 py-3 border border-slate-200">${cell}</td>`).join('')}
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-                <div class="mt-6 p-6 bg-slate-50 border border-slate-100 rounded-2xl">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Report Summary</p>
-                    <div class="grid grid-cols-3 gap-8">
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-500 mb-1">Total Records</p>
-                            <p class="text-xl font-black text-[#1c2a59]">${data.count}</p>
-                        </div>
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-500 mb-1">Report Period</p>
-                            <p class="text-xl font-black text-[#1c2a59]">May 2024</p>
-                        </div>
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-500 mb-1">Data Status</p>
-                            <p class="text-xl font-black text-emerald-600 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Verified
-                            </p>
-                        </div>
+            // Update report inner title and period
+            let periodText = '';
+            let quarterLabel = data._quarterLabel || 'First Quarter';
+            let acadYear = data._acadYear || 'A.Y. 2024–2025';
+
+            if (data.isQuarterly) {
+                periodText = `${quarterLabel} • ${acadYear}`;
+            } else {
+                // For standard monthly/custom reports, show the month from the sample data
+                quarterLabel = 'Month of May';
+                periodText = 'Month of May • 2024';
+            }
+            document.getElementById('report-inner-title').innerText = data.title.toUpperCase();
+            document.getElementById('report-inner-period').innerText = periodText;
+
+            let tableHtml = '';
+
+            if (data.isQuarterly) {
+                // Build quarterly multi-column header table
+                const months = data.months;
+                const services = data.serviceGroups;
+                const hdrColor = data.headerColor;
+                const tableNum = document.getElementById('table-number-input')?.value || '';
+
+                // Calculate column totals
+                const colTotals = services.map((_, si) => {
+                    const t = [0, 0, 0, 0];
+                    data.categories.forEach(cat => { for (let m = 0; m < 4; m++) t[m] += cat.data[si][m]; });
+                    return t;
+                });
+
+                // Header Row 1: Service Group names spanning 4 cols each
+                let h1 = `<th rowspan="2" style="background:${hdrColor};color:#fff;border:1px solid ${hdrColor}" class="px-2 py-2 text-[9px] font-black uppercase text-center min-w-[60px]">YEAR<br>LEVEL</th>`;
+                services.forEach(s => {
+                    h1 += `<th colspan="4" style="background:${hdrColor};color:#fff;border:1px solid ${hdrColor}" class="px-1 py-2 text-[8px] font-black uppercase text-center tracking-wide">${s}</th>`;
+                });
+
+                // Header Row 2: Month sub-columns
+                let h2 = '';
+                services.forEach(() => {
+                    months.forEach(m => {
+                        h2 += `<th style="background:${hdrColor};color:#fff;border:1px solid ${hdrColor}" class="px-1 py-1.5 text-[7px] font-black text-center">${m}</th>`;
+                    });
+                    h2 += `<th style="background:${hdrColor};color:#fff;border:1px solid ${hdrColor}" class="px-1 py-1.5 text-[7px] font-black text-center">TOTAL</th>`;
+                });
+
+                // Data Rows
+                let bodyRows = '';
+                data.categories.forEach(cat => {
+                    let cells = `<td class="px-2 py-1.5 text-[9px] font-black text-slate-800 border border-slate-200 bg-slate-50">${cat.label}</td>`;
+                    cat.data.forEach(svcData => {
+                        svcData.forEach((val, i) => {
+                            const isTot = i === 3;
+                            const color = val > 0 ? (isTot ? 'font-black text-slate-900' : 'text-slate-700') : 'text-slate-300';
+                            cells += `<td class="px-1 py-1.5 text-[10px] ${color} text-center border border-slate-200 ${isTot ? 'bg-slate-50' : ''}">${val || ''}</td>`;
+                        });
+                    });
+                    bodyRows += `<tr>${cells}</tr>`;
+                });
+
+                // Total Row
+                let totalCells = `<td class="px-2 py-2 text-[9px] font-black text-white border border-slate-300" style="background:${hdrColor}">TOTAL</td>`;
+                colTotals.forEach(t => {
+                    t.forEach((val, i) => {
+                        const isTot = i === 3;
+                        totalCells += `<td class="px-1 py-2 text-[10px] font-black text-center border border-slate-300 ${isTot ? 'bg-slate-100 text-slate-900' : 'text-slate-600'}">${val || ''}</td>`;
+                    });
+                });
+                bodyRows += `<tr class="bg-slate-50">${totalCells}</tr>`;
+
+                tableHtml = `
+                    <div class="overflow-x-auto -mx-2">
+                        <table class="w-full border-collapse border border-slate-200 text-center" style="min-width:700px">
+                            <thead>
+                                <tr>${h1}</tr>
+                                <tr>${h2}</tr>
+                            </thead>
+                            <tbody>${bodyRows}</tbody>
+                        </table>
                     </div>
-                </div>
-            `;
+                    <p class="text-center text-[11px] font-black text-slate-600 mt-3">${tableNum}. ${data.caption} in the ${quarterLabel}</p>
+                `;
+            } else {
+                const detailLevel = document.getElementById('detail-level-select')?.value || 'comprehensive';
+
+                if (detailLevel === 'executive') {
+                    // Executive Summary — aggregated metrics only, no individual rows
+                    const categoryMap = {};
+                    // Find index of "Reason for Visit" or "Category"
+                    let catIndex = data.columns.findIndex(c => c.toLowerCase().includes('reason'));
+                    if (catIndex === -1) catIndex = data.columns.findIndex(c => c.toLowerCase().includes('category'));
+                    if (catIndex === -1) catIndex = 1; // Fallback
+
+                    data.rows.forEach(row => {
+                        const cat = row[catIndex] || 'Other';
+                        categoryMap[cat] = (categoryMap[cat] || 0) + 1;
+                    });
+
+                    const sortedEntries = Object.entries(categoryMap).sort((a, b) => b[1] - a[1]);
+                    const topCategories = sortedEntries.slice(0, 4);
+                    const otherEntries = sortedEntries.slice(4);
+
+                    if (otherEntries.length > 0) {
+                        const othersCount = otherEntries.reduce((sum, entry) => sum + entry[1], 0);
+                        topCategories.push(['Others', othersCount]);
+                    }
+
+                    let conicStops = [];
+                    let currentPct = 0;
+                    const colorsHex = ['#1c2a59', '#3b82f6', '#10b981', '#f59e0b', '#94a3b8']; // primary, blue, emerald, amber, slate-400
+                    const legendHtml = topCategories.map(([cat, count], i) => {
+                        const pct = Math.round((count / data.rows.length) * 100);
+                        const start = currentPct;
+                        const end = currentPct + pct;
+                        // Use a slightly different logic for the last slice to ensure it fills exactly to 100%
+                        const actualEnd = (i === topCategories.length - 1) ? 100 : end;
+                        conicStops.push(`${colorsHex[i]} ${start}% ${actualEnd}%`);
+                        currentPct = actualEnd;
+                        return `
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${colorsHex[i]}"></span>
+                                    <span class="text-xs font-bold text-slate-700 truncate">${cat}</span>
+                                </div>
+                                <span class="text-[10px] font-black text-slate-500">${pct}%</span>
+                            </div>
+                        `;
+                    }).join('');
+
+                    const conicGradient = `conic-gradient(${conicStops.join(', ')})`;
+
+                    tableHtml = `
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="material-symbols-outlined text-primary text-[18px]">summarize</span>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Executive Summary</p>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-gradient-to-br from-primary to-[#003d7c] rounded-2xl p-5 text-white">
+                                    <p class="text-[9px] font-black uppercase tracking-widest text-blue-200 mb-2">Total Records</p>
+                                    <p class="text-3xl font-black">${data.count}</p>
+                                    <p class="text-[10px] font-bold text-blue-200 mt-1">in report period</p>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5">
+                                    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Sample Shown</p>
+                                    <p class="text-3xl font-black text-[#1c2a59]">${data.rows.length}</p>
+                                    <p class="text-[10px] font-bold text-slate-400 mt-1">of ${data.count} records</p>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5">
+                                    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Est. Pages</p>
+                                    <p class="text-3xl font-black text-[#1c2a59]">${data.pages}</p>
+                                    <p class="text-[10px] font-bold text-slate-400 mt-1">when printed</p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">Category Distribution</p>
+                                <div class="flex items-center gap-8">
+                                    <div class="relative w-28 h-28 rounded-full flex items-center justify-center shrink-0" style="background: ${conicGradient}">
+                                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center shadow-inner">
+                                            <span class="material-symbols-outlined text-slate-300 text-[20px]">pie_chart</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 space-y-3">
+                                        ${legendHtml}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="material-symbols-outlined text-primary text-[18px]">calendar_month</span>
+                                        <p class="text-[9px] font-black text-primary uppercase tracking-widest">Report Period</p>
+                                    </div>
+                                    <p class="text-sm font-black text-primary">${quarterLabel}</p>
+                                    <p class="text-[10px] font-bold text-blue-400 mt-1">${acadYear}</p>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="material-symbols-outlined text-slate-500 text-[18px]">schedule</span>
+                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Generated On</p>
+                                    </div>
+                                    <p class="text-sm font-black text-slate-700">${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                                    <p class="text-[10px] font-bold text-slate-400 mt-1">${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                } else if (detailLevel === 'raw') {
+                    // Raw Data Export — minimal monospace table, all columns, no formatting
+                    tableHtml = `
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-slate-500 text-[18px]">table_chart</span>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Raw Data Export</p>
+                                </div>
+                                <span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full">${data.rows.length} of ${data.count} rows shown</span>
+                            </div>
+                            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                                <table class="w-full text-left border-collapse font-mono">
+                                    <thead>
+                                        <tr class="bg-slate-100 border-b border-slate-200">
+                                            <th class="px-3 py-2 text-[9px] font-black text-slate-500 border-r border-slate-200">#</th>
+                                            ${data.columns.map(col => `<th class="px-3 py-2 text-[9px] font-black text-slate-500 border-r border-slate-200 whitespace-nowrap">${col}</th>`).join('')}
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-[11px] text-slate-600">
+                                        ${data.rows.map((row, idx) => `
+                                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                                <td class="px-3 py-2 text-[9px] text-slate-400 border-r border-slate-100">${idx + 1}</td>
+                                                ${row.map(cell => `<td class="px-3 py-2 border-r border-slate-100 whitespace-nowrap">${cell}</td>`).join('')}
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
+                                <span class="material-symbols-outlined text-amber-600 text-[18px]">info</span>
+                                <p class="text-[10px] font-bold text-amber-700">Raw data contains ${data.count} total records across ${data.pages} pages. This preview shows the first ${data.rows.length} rows. Full dataset will be included in the exported file.</p>
+                            </div>
+                        </div>
+                    `;
+
+                } else {
+                    // Comprehensive Breakdown — full formatted table + summary
+                    tableHtml = `
+                        <table class="w-full text-left border-collapse border border-slate-200">
+                            <thead>
+                                <tr class="bg-slate-900 text-white">
+                                    ${data.columns.map(col => `<th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest border border-slate-800">${col}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody class="text-[12px] font-medium text-slate-700">
+                                ${data.rows.map(row => `
+                                    <tr class="border border-slate-200 even:bg-slate-50">
+                                        ${row.map(cell => `<td class="px-4 py-3 border border-slate-200">${cell}</td>`).join('')}
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        <div class="mt-6 p-6 bg-slate-50 border border-slate-100 rounded-2xl">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Report Summary</p>
+                            <div class="grid grid-cols-3 gap-8">
+                                <div>
+                                    <p class="text-[9px] font-bold text-slate-500 mb-1">Total Records</p>
+                                    <p class="text-xl font-black text-[#1c2a59]">${data.count}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-bold text-slate-500 mb-1">Report Period</p>
+                                    <p class="text-xl font-black text-[#1c2a59]">${quarterLabel}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-bold text-slate-500 mb-1">Generated On</p>
+                                    <p class="text-lg font-black text-[#1c2a59]">${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
 
             document.getElementById('sample-report-table-container').innerHTML = tableHtml;
         }
@@ -913,7 +1345,7 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast-item pointer-events-auto flex items-center gap-4 bg-white border border-slate-100 p-4 pr-6 rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all duration-300`;
-            
+
             const icon = type === 'success' ? 'check_circle' : 'error';
             const iconColor = type === 'success' ? 'text-emerald-500' : 'text-red-500';
             const bgColor = type === 'success' ? 'bg-emerald-50' : 'bg-red-50';
@@ -929,7 +1361,7 @@
             `;
 
             container.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateX(20px)';
